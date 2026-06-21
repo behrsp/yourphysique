@@ -837,13 +837,7 @@ export default function App() {
               </button>
             </form>
 
-            <div className="mt-8 pt-6 border-t border-neutral-800/60 text-center">
-              <span className="text-xs text-neutral-500">Credenciais Admin Padrão para Testes:</span>
-              <p className="text-xs text-neutral-400 font-mono mt-2">
-                Celular Admin: <strong className="text-white">41984842941</strong> <br/>
-                Senha Admin: <strong className="text-white">123456</strong>
-              </p>
-            </div>
+
           </div>
         ) : currentUser.role === "admin" ? (
           
