@@ -138,6 +138,24 @@ async function initializeDB() {
       )
     `);
 
+    // Create settings table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS settings (
+        key VARCHAR(50) PRIMARY KEY,
+        value TEXT NOT NULL
+      )
+    `);
+
+    // Seed default settings
+    await client.query(`
+      INSERT INTO settings (key, value)
+      VALUES 
+        ('pix_key', '41984842941'),
+        ('pix_qrcode', '')
+      ON CONFLICT (key) DO NOTHING
+    `);
+
+
     // Seed default admin personal profile if not exists
     const adminCheck = await client.query("SELECT * FROM users WHERE phone = $1", ["41984842941"]);
     if (adminCheck.rows.length === 0) {
@@ -322,10 +340,9 @@ app.post("/api/users", async (req, res) => {
   }
 });
 
-// Update client parameters (including avatar, frozen toggling, etc)
 app.put("/api/users/:phone", async (req, res) => {
   const { phone } = req.params;
-  const { name, age, weight, height, physical_issue, main_goal, is_demo, payment_day, avatar, is_frozen } = req.body;
+  const { name, age, weight, height, physical_issue, main_goal, is_demo, payment_day, avatar, is_frozen, role } = req.body;
 
   try {
     const result = await pool.query(`
@@ -340,10 +357,11 @@ app.put("/api/users/:phone", async (req, res) => {
         is_demo = COALESCE($7, is_demo),
         payment_day = COALESCE($8, payment_day),
         avatar = COALESCE($9, avatar),
-        is_frozen = COALESCE($10, is_frozen)
-      WHERE phone = $11
+        is_frozen = COALESCE($10, is_frozen),
+        role = COALESCE($11, role)
+      WHERE phone = $12
       RETURNING *
-    `, [name, age, weight, height, physical_issue, main_goal, is_demo, payment_day, avatar, is_frozen, phone]);
+    `, [name, age, weight, height, physical_issue, main_goal, is_demo, payment_day, avatar, is_frozen, role, phone]);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Usuário não encontrado" });
@@ -767,6 +785,36 @@ app.get("/api/finance/stats", async (req, res) => {
     const result = await pool.query("SELECT SUM(amount) as total FROM payments WHERE status = 'Pago'");
     const totalInBox = Number(result.rows[0]?.total || 0);
     res.json({ totalInBox });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET Settings for PIX and QR Code config
+app.get("/api/settings", async (req, res) => {
+  try {
+    const result = await pool.query("SELECT * FROM settings");
+    const settings: Record<string, string> = {};
+    result.rows.forEach(row => {
+      settings[row.key] = row.value;
+    });
+    res.json({ settings });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// POST/PUT Settings updates (For instructor/admin config)
+app.post("/api/settings", async (req, res) => {
+  const { pix_key, pix_qrcode } = req.body;
+  try {
+    if (pix_key !== undefined) {
+      await pool.query("INSERT INTO settings (key, value) VALUES ('pix_key', $1) ON CONFLICT (key) DO UPDATE SET value = $1", [pix_key]);
+    }
+    if (pix_qrcode !== undefined) {
+      await pool.query("INSERT INTO settings (key, value) VALUES ('pix_qrcode', $1) ON CONFLICT (key) DO UPDATE SET value = $1", [pix_qrcode]);
+    }
+    res.json({ success: true });
   } catch (err: any) {
     res.status(500).json({ error: err.message });
   }

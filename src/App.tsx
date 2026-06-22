@@ -103,6 +103,12 @@ export default function App() {
   const [payments, setPayments] = useState<PaymentInvoice[]>([]);
   const [totalInBox, setTotalInBox] = useState(0);
 
+  // PIX Settings States
+  const [pixKey, setPixKey] = useState("41984842941");
+  const [pixQrCode, setPixQrCode] = useState("");
+  const [formPixKey, setFormPixKey] = useState("");
+  const [formPixQrCode, setFormPixQrCode] = useState("");
+
   // Focus view details (Evaluations, Workouts, Diets, Completed log metrics)
   const [clientEvaluations, setClientEvaluations] = useState<Evaluation[]>([]);
   const [clientWorkouts, setClientWorkouts] = useState<Workout[]>([]);
@@ -161,8 +167,50 @@ export default function App() {
   const [showSwapModal, setShowSwapModal] = useState(false);
 
   // Refreshes core collections
+  const loadSettings = async () => {
+    try {
+      const res = await fetch("/api/settings");
+      const data = await res.json();
+      if (data.settings) {
+        if (data.settings.pix_key) {
+          setPixKey(data.settings.pix_key);
+          setFormPixKey(data.settings.pix_key);
+        }
+        if (data.settings.pix_qrcode) {
+          setPixQrCode(data.settings.pix_qrcode);
+          setFormPixQrCode(data.settings.pix_qrcode);
+        }
+      }
+    } catch (err) {
+      console.error("Erro ao carregar configurações:", err);
+    }
+  };
+
+  const handleSavePixSettings = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("/api/settings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          pix_key: formPixKey,
+          pix_qrcode: formPixQrCode
+        })
+      });
+      if (res.ok) {
+        alert("Configurações do PIX salvas com sucesso!");
+        loadSettings();
+      } else {
+        alert("Erro ao salvar configurações do PIX.");
+      }
+    } catch (err: any) {
+      alert("Erro de rede: " + err.message);
+    }
+  };
+
   const loadAdminAllData = async () => {
     try {
+      loadSettings();
       const resU = await fetch("/api/users");
       const dataU = await resU.json();
       if (dataU.users) setClients(dataU.users);
@@ -291,6 +339,11 @@ export default function App() {
     return () => clearInterval(pingInterval);
   }, [currentUser]);
 
+  // Load settings on startup
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
   // Handle bootstrap for logged user
   useEffect(() => {
     if (!currentUser) return;
@@ -355,7 +408,7 @@ export default function App() {
   };
 
   // Base64 file loaders to handle avatar and comparison images offline persistent format
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, target: "avatar" | "front" | "side") => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, target: "avatar" | "front" | "side" | "pix") => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -379,6 +432,8 @@ export default function App() {
         setEvalPhotoFront(base64);
       } else if (target === "side") {
         setEvalPhotoSide(base64);
+      } else if (target === "pix") {
+        setFormPixQrCode(base64);
       }
     };
     reader.readAsDataURL(file);
@@ -749,22 +804,28 @@ export default function App() {
             </p>
 
             {/* Pix Section details */}
-            <div className="bg-neutral-950 p-4 rounded-xl border border-neutral-800 mb-6 text-left">
+            <div className="bg-neutral-955 bg-neutral-950 p-4 rounded-xl border border-neutral-800 mb-6 text-left">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-neutral-400 font-mono">CHAVE PIX CNPJ / CELULAR:</span>
-                <span className={`text-xs ${theme.text} font-bold`}>41984842941</span>
+                <span className={`text-xs ${theme.text} font-bold`}>{pixKey}</span>
               </div>
               <div className="text-sm font-sans font-medium text-neutral-200 mb-4 text-center">
-                Chave Celular Personal: <strong className="text-white">41984842941</strong>
+                Chave Celular Personal: <strong className="text-white">{pixKey}</strong>
               </div>
               
               {/* Manual QR Code graphics */}
-              <div className="bg-white p-3 rounded-xl mx-auto w-40 h-40 flex items-center justify-center">
-                <div className="text-center text-neutral-900 font-mono text-[9px] font-bold">
-                  <QrCode className="w-28 h-28 mx-auto mb-1 text-black" />
-                  PIX AVALIAFIT
+              {pixQrCode ? (
+                <div className="bg-white p-2 rounded-xl mx-auto w-40 h-40 flex items-center justify-center">
+                  <img src={pixQrCode} alt="QR Code PIX" className="w-full h-full object-contain" referrerPolicy="no-referrer" />
                 </div>
-              </div>
+              ) : (
+                <div className="bg-white p-3 rounded-xl mx-auto w-40 h-40 flex items-center justify-center">
+                  <div className="text-center text-neutral-900 font-mono text-[9px] font-bold">
+                    <QrCode className="w-28 h-28 mx-auto mb-1 text-black" />
+                    PIX AVALIAFIT
+                  </div>
+                </div>
+              )}
               <p className="text-center text-[11px] text-neutral-500 mt-2">
                 Valor mensalidade: <strong className="text-neutral-300">R$ 150,00</strong>
               </p>
@@ -1053,7 +1114,14 @@ export default function App() {
                               )}
                             </div>
                             <div>
-                              <h2 className="text-xl font-black text-white">{focusedClient.name}</h2>
+                              <h2 className="text-xl font-black text-white flex items-center gap-2">
+                                {focusedClient.name}
+                                {focusedClient.role === "admin" && (
+                                  <span className="bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded">
+                                    Personal / Admin
+                                  </span>
+                                )}
+                              </h2>
                               <p className="text-xs text-neutral-400 font-mono">Celular / Login:  {focusedClient.phone}  |  Idade: {focusedClient.age} anos  |  Dia de vencimento: Dia {focusedClient.payment_day}</p>
                               <div className="mt-2 flex flex-wrap gap-2">
                                 <span className="bg-neutral-950 border border-neutral-800 text-[11px] px-2.5 py-1 rounded-md">Peso: <strong className="text-white">{focusedClient.weight} kg</strong></span>
@@ -1094,6 +1162,24 @@ export default function App() {
                                   <span>Congelar manualmente</span>
                                 </>
                               )}
+                            </button>
+
+                            <button
+                              id="toggle_client_role_btn"
+                              onClick={() => {
+                                const newRole = focusedClient.role === "admin" ? "client" : "admin";
+                                const confirmMsg = newRole === "admin" 
+                                  ? `Tem certeza que deseja promover ${focusedClient.name} a Personal (Administrador)? Ele(a) terá acesso completo para gerenciar todos os alunos, treinos e cobranças.`
+                                  : `Deseja remover os privilégios de Personal de ${focusedClient.name} e rebaixá-lo a Aluno?`;
+                                if (confirm(confirmMsg)) {
+                                  handleEditUserStatus(focusedClient.phone, { role: newRole });
+                                }
+                              }}
+                              className={`px-4 py-2 text-xs rounded-xl font-semibold transition cursor-pointer flex items-center gap-1.5 ${
+                                focusedClient.role === "admin" ? "bg-purple-900/30 text-purple-400 border border-purple-500/20" : "bg-neutral-800 hover:bg-neutral-700 text-neutral-300"
+                              }`}
+                            >
+                              {focusedClient.role === "admin" ? "Remover Personal" : "Tornar Personal (Admin)"}
                             </button>
 
                             <button
@@ -1847,6 +1933,74 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* 4. CONFIGURAÇÕES DE COBRANÇA PIX */}
+                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6">
+                  <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                    <QrCode className="w-5 h-5 text-emerald-450" />
+                    Configuração PIX Recebimentos
+                  </h3>
+                  <p className="text-[11px] text-neutral-450 text-neutral-400 leading-relaxed mb-4 text-left">
+                    Defina sua chave de recebimento e a imagem do QR Code para as cobranças exibidas no ambiente do aluno.
+                  </p>
+
+                  <form onSubmit={handleSavePixSettings} className="space-y-4 text-left">
+                    <div>
+                      <label className="block text-[11px] text-neutral-400 mb-1">Chave PIX (Telefone, CNPJ, etc.)</label>
+                      <input
+                        id="settings_pix_key_input"
+                        type="text"
+                        placeholder="Ex: 41984842941"
+                        value={formPixKey}
+                        onChange={(e) => setFormPixKey(e.target.value)}
+                        className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-white"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-[11px] text-neutral-400 mb-1">Imagem do QR Code</label>
+                      <div className="flex flex-col gap-2">
+                        <input
+                          id="settings_pix_qrcode_file"
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleFileChange(e, "pix")}
+                          className="text-white text-[10px] cursor-pointer"
+                        />
+                        {formPixQrCode ? (
+                          <div className="mt-2 text-center">
+                            <span className="text-[9px] text-neutral-500 block mb-1">Pré-visualização do QR Code</span>
+                            <img
+                              src={formPixQrCode}
+                              alt="Pix QR Code Preview"
+                              className="w-32 h-32 object-contain mx-auto bg-white p-1 rounded-lg border border-neutral-700"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setFormPixQrCode("")}
+                              className="mt-1.5 text-[10px] text-red-400 hover:underline"
+                            >
+                              Remover Imagem
+                            </button>
+                          </div>
+                        ) : (
+                          <div className="p-4 border border-dashed border-neutral-800 rounded-xl text-center text-[10px] text-neutral-500 bg-neutral-950">
+                            Nenhum QR Code configurado (usará ícone padrão)
+                          </div>
+                        )}
+                      </div>
+                    </div>
+
+                    <button
+                      id="save_pix_settings_btn"
+                      type="submit"
+                      className={`w-full py-2.5 rounded-xl ${theme.primary} text-neutral-950 font-bold transition duration-250 text-xs cursor-pointer`}
+                    >
+                      Salvar Configuração PIX
+                    </button>
+                  </form>
+                </div>
+
               </div>
               
             </div>
@@ -2053,16 +2207,22 @@ export default function App() {
                       <QrCode className="w-5 h-5 text-emerald-400" />
                       Pagar Mensalidade PIX
                     </h3>
-                    <p className="text-xs text-neutral-505 text-neutral-500 dark:text-neutral-400 mb-4 leading-relaxed">
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-4 leading-relaxed">
                       Efetue seu pix de R$ 150,00 diretamente pela chave da personal:
                     </p>
 
                     <div className="bg-neutral-50 dark:bg-neutral-950 p-3.5 rounded-xl border border-neutral-150 dark:border-neutral-900 space-y-3.5 mb-4 text-center">
-                      <div className="bg-white p-2 rounded-lg inline-block">
-                        <QrCode className="w-24 h-24 text-black" />
-                      </div>
+                      {pixQrCode ? (
+                        <div className="bg-white p-2 rounded-lg inline-block w-40 h-40">
+                          <img src={pixQrCode} alt="QR Code PIX" className="w-full h-full object-contain mx-auto" referrerPolicy="no-referrer" />
+                        </div>
+                      ) : (
+                        <div className="bg-white p-2 rounded-lg inline-block">
+                          <QrCode className="w-24 h-24 text-black" />
+                        </div>
+                      )}
                       <div className="text-xs text-neutral-700 dark:text-neutral-300 font-mono">
-                        Chave Pix: <strong className="text-neutral-900 dark:text-white block select-all">41984842941</strong>
+                        Chave Pix: <strong className="text-neutral-900 dark:text-white block select-all">{pixKey}</strong>
                       </div>
                     </div>
 
