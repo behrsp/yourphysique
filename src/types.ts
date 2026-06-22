@@ -75,3 +75,12 @@ export interface PaymentInvoice {
   status: 'Pago' | 'Pendente';
   paid_at?: string;
 }
+
+export interface Diet {
+  id: number;
+  client_phone: string;
+  diet_date: string;
+  title: string;
+  description: string;
+  created_at?: string;
+}

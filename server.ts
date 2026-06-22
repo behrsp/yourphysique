@@ -11,6 +11,7 @@ const PORT = 3000;
 
 // Set up PostgreSQL Pool
 const connectionString = process.env.DATABASE_URL || "postgresql://neondb_owner:npg_et9wap1vsCHn@ep-snowy-rice-acf5juh6-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require";
+pg.types.setTypeParser(1700, (val) => parseFloat(val));
 const pool = new pg.Pool({
   connectionString,
   ssl: {
@@ -122,6 +123,18 @@ async function initializeDB() {
         status VARCHAR(20) DEFAULT 'Pendente',
         paid_at TIMESTAMP,
         UNIQUE (client_phone, month)
+      )
+    `);
+
+    // Create diets table
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS diets (
+        id SERIAL PRIMARY KEY,
+        client_phone VARCHAR(20) REFERENCES users(phone) ON DELETE CASCADE,
+        diet_date DATE NOT NULL,
+        title VARCHAR(150) NOT NULL,
+        description TEXT NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       )
     `);
 
@@ -447,6 +460,48 @@ app.delete("/api/evaluations/:id", async (req, res) => {
   }
 });
 
+// DIETS / NUTRITION
+
+// List diets for a client
+app.get("/api/users/:phone/diets", async (req, res) => {
+  const { phone } = req.params;
+  try {
+    const result = await pool.query("SELECT * FROM diets WHERE client_phone = $1 ORDER BY diet_date DESC", [phone]);
+    res.json({ diets: result.rows });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Create diet plan
+app.post("/api/diets", async (req, res) => {
+  const { client_phone, diet_date, title, description } = req.body;
+  if (!client_phone || !diet_date || !title || !description) {
+    return res.status(400).json({ error: "Telefone, data, título e descrição são obrigatórios" });
+  }
+  try {
+    const result = await pool.query(`
+      INSERT INTO diets (client_phone, diet_date, title, description)
+      VALUES ($1, $2, $3, $4)
+      RETURNING *
+    `, [client_phone, diet_date, title, description]);
+    res.status(201).json({ diet: result.rows[0] });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete diet plan
+app.delete("/api/diets/:id", async (req, res) => {
+  const { id } = req.params;
+  try {
+    await pool.query("DELETE FROM diets WHERE id = $1", [id]);
+    res.json({ success: true });
+  } catch (err: any) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // WORKOUTS / EXERCISES
 
 // Get active exercises for a client
@@ -739,7 +794,7 @@ async function startServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Express server successfully initialized on http://0.0.0.0:${PORT}`);
+    console.log(`Express server successfully initialized on http://localhost:${PORT}`);
   });
 }
 

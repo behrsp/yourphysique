@@ -34,7 +34,9 @@ import {
   ArrowUpRight,
   UserX,
   PlusCircle,
-  FileText
+  FileText,
+  Sun,
+  Moon
 } from "lucide-react";
 import { 
   ResponsiveContainer, 
@@ -50,15 +52,15 @@ import {
   AreaChart,
   Area
 } from "recharts";
-import { User, Evaluation, Workout, Message, PaymentInvoice, WorkoutHistory } from "./types";
+import { User, Evaluation, Workout, Message, PaymentInvoice, WorkoutHistory, Diet } from "./types";
 
 // Dynamic Accent Color Definitions
 const THEMES = [
-  { id: "emerald", name: "Verde Fitness", primary: "bg-emerald-600 hover:bg-emerald-500", text: "text-emerald-400", border: "border-emerald-500/20", focus: "focus:ring-emerald-500", bgAccent: "bg-emerald-500/10", tag: "emerald" },
-  { id: "violet", name: "Violeta Profissional", primary: "bg-violet-600 hover:bg-violet-500", text: "text-violet-400", border: "border-violet-500/20", focus: "focus:ring-violet-500", bgAccent: "bg-violet-500/10", tag: "violet" },
-  { id: "cyan", name: "Azul Atlético", primary: "bg-cyan-600 hover:bg-cyan-500", text: "text-cyan-400", border: "border-cyan-500/20", focus: "focus:ring-cyan-500", bgAccent: "bg-cyan-500/10", tag: "cyan" },
-  { id: "rose", name: "Rosa Intenso", primary: "bg-rose-600 hover:bg-rose-500", text: "text-rose-400", border: "border-rose-500/20", focus: "focus:ring-rose-500", bgAccent: "bg-rose-500/10", tag: "rose" },
-  { id: "amber", name: "Âmbar Estimulante", primary: "bg-amber-600 hover:bg-amber-500", text: "text-amber-400", border: "border-amber-500/20", focus: "focus:ring-amber-500", bgAccent: "bg-amber-500/10", tag: "amber" },
+  { id: "emerald", name: "Verde Fitness", primary: "bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 text-white dark:text-neutral-950", text: "text-emerald-600 dark:text-emerald-400", border: "border-emerald-600/20 dark:border-emerald-500/20", focus: "focus:ring-emerald-500", bgAccent: "bg-emerald-50 dark:bg-emerald-500/10", tag: "emerald" },
+  { id: "violet", name: "Violeta Profissional", primary: "bg-violet-600 hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-400 text-white dark:text-neutral-950", text: "text-violet-600 dark:text-violet-400", border: "border-violet-600/20 dark:border-violet-500/20", focus: "focus:ring-violet-500", bgAccent: "bg-violet-50 dark:bg-violet-500/10", tag: "violet" },
+  { id: "cyan", name: "Azul Atlético", primary: "bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-neutral-950", text: "text-cyan-600 dark:text-cyan-400", border: "border-cyan-600/20 dark:border-cyan-500/20", focus: "focus:ring-cyan-500", bgAccent: "bg-cyan-50 dark:bg-cyan-500/10", tag: "cyan" },
+  { id: "rose", name: "Rosa Intenso", primary: "bg-rose-600 hover:bg-rose-700 dark:bg-rose-500 dark:hover:bg-rose-400 text-white dark:text-neutral-950", text: "text-rose-600 dark:text-rose-400", border: "border-rose-600/20 dark:border-rose-500/20", focus: "focus:ring-rose-500", bgAccent: "bg-rose-50 dark:bg-rose-500/10", tag: "rose" },
+  { id: "amber", name: "Âmbar Estimulante", primary: "bg-amber-600 hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-400 text-white dark:text-neutral-950", text: "text-amber-600 dark:text-amber-400", border: "border-amber-600/20 dark:border-amber-500/20", focus: "focus:ring-amber-500", bgAccent: "bg-amber-50 dark:bg-amber-500/10", tag: "amber" },
 ];
 
 export default function App() {
@@ -79,6 +81,21 @@ export default function App() {
   });
   const theme = THEMES.find((t) => t.id === activeTheme) || THEMES[0];
 
+  // Light/Dark mode state
+  const [darkMode, setDarkMode] = useState(() => {
+    const saved = localStorage.getItem("avaliafit_darkmode");
+    return saved ? JSON.parse(saved) : true;
+  });
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+    localStorage.setItem("avaliafit_darkmode", JSON.stringify(darkMode));
+  }, [darkMode]);
+
   // Global App States - Admin perspective
   const [clients, setClients] = useState<User[]>([]);
   const [activeClientPhone, setActiveClientPhone] = useState<string>("");
@@ -86,11 +103,18 @@ export default function App() {
   const [payments, setPayments] = useState<PaymentInvoice[]>([]);
   const [totalInBox, setTotalInBox] = useState(0);
 
-  // Focus view details (Evaluations, Workouts, Completed log metrics)
+  // Focus view details (Evaluations, Workouts, Diets, Completed log metrics)
   const [clientEvaluations, setClientEvaluations] = useState<Evaluation[]>([]);
   const [clientWorkouts, setClientWorkouts] = useState<Workout[]>([]);
+  const [clientDiets, setClientDiets] = useState<Diet[]>([]);
   const [workoutLogHistory, setWorkoutLogHistory] = useState<WorkoutHistory[]>([]);
   const [currentSelectedEvaluation, setCurrentSelectedEvaluation] = useState<Evaluation | null>(null);
+  const [currentSelectedDiet, setCurrentSelectedDiet] = useState<Diet | null>(null);
+
+  // Forms States - Diets
+  const [newDietTitle, setNewDietTitle] = useState("");
+  const [newDietDate, setNewDietDate] = useState(new Date().toISOString().slice(0, 10));
+  const [newDietDescription, setNewDietDescription] = useState("");
 
   // Forms States - Client management
   const [newClientPhone, setNewClientPhone] = useState("");
@@ -179,8 +203,69 @@ export default function App() {
       const resHi = await fetch(`/api/users/${phone}/workout-history`);
       const dataHi = await resHi.json();
       if (dataHi.history) setWorkoutLogHistory(dataHi.history);
+
+      const resDi = await fetch(`/api/users/${phone}/diets`);
+      const dataDi = await resDi.json();
+      if (dataDi.diets) {
+        setClientDiets(dataDi.diets);
+        if (dataDi.diets.length > 0) {
+          setCurrentSelectedDiet(dataDi.diets[0]);
+        } else {
+          setCurrentSelectedDiet(null);
+        }
+      }
     } catch (err) {
       console.error("Erro ao carregar dados do usuário:", err);
+    }
+  };
+
+  const handleAddDiet = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activeClientPhone) {
+      alert("Selecione um aluno antes de registrar a dieta.");
+      return;
+    }
+    if (!newDietTitle || !newDietDescription) {
+      alert("Insira título e detalhes da dieta!");
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/diets", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          client_phone: activeClientPhone,
+          diet_date: newDietDate,
+          title: newDietTitle,
+          description: newDietDescription
+        })
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Erro ao salvar dieta");
+        return;
+      }
+
+      alert("Plano alimentar / Dieta registrada com sucesso!");
+      setNewDietTitle("");
+      setNewDietDescription("");
+      loadFocusedClientData(activeClientPhone);
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  const handleDeleteDiet = async (id: number) => {
+    if (!confirm("Excluir definitivamente este plano alimentar?")) return;
+    try {
+      const res = await fetch(`/api/diets/${id}`, { method: "DELETE" });
+      if (res.ok) {
+        loadFocusedClientData(activeClientPhone);
+      }
+    } catch (err) {
+      console.error(err);
     }
   };
 
@@ -709,67 +794,77 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans transition-colors duration-200">
+    <div className="min-h-screen bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 flex flex-col font-sans transition-colors duration-200">
       
       {/* Dynamic Header Navbar with Active Custom Accents */}
-      <header className="border-b border-neutral-900 bg-neutral-950 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 sticky top-0 z-50">
+      <header className="border-b border-neutral-200 dark:border-neutral-900 bg-white dark:bg-neutral-950 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <div className={`p-2.5 rounded-xl ${theme.bgAccent} ${theme.text}`}>
             <Dumbbell className="w-7 h-7" />
           </div>
           <div>
-            <h1 className="text-xl font-extrabold tracking-tight text-white flex items-center gap-2">
-              AvaliaFit <span className="text-xs px-2 py-0.5 rounded-full bg-neutral-800 text-neutral-400 border border-neutral-700 font-normal">Health & Assessment Portal</span>
+            <h1 className="text-xl font-extrabold tracking-tight text-neutral-900 dark:text-white flex items-center gap-2">
+              AvaliaFit <span className="text-xs px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-700 font-normal">Health & Assessment Portal</span>
             </h1>
             <p className="text-[11px] text-neutral-500 font-mono">CONEXÃO NEON: ONLINE e SEGURO</p>
           </div>
         </div>
 
-        {currentUser && (
-          <div className="flex flex-wrap items-center gap-4">
-            
-            {/* Real-time Theme customization dropdown option */}
-            <div className="flex items-center gap-2 bg-neutral-900 px-3 py-1.5 rounded-lg border border-neutral-800">
-              <Paintbrush className="w-4 h-4 text-neutral-400" />
-              <select 
-                id="theme_dropdown_picker"
-                value={activeTheme} 
-                onChange={(e) => handleThemeChange(e.target.value)}
-                className="bg-transparent text-xs text-neutral-200 font-medium focus:outline-none cursor-pointer"
-              >
-                {THEMES.map((t) => (
-                  <option key={t.id} value={t.id} className="bg-neutral-900 text-neutral-100">{t.name}</option>
-                ))}
-              </select>
-            </div>
+        <div className="flex flex-wrap items-center gap-4">
+          
+          {/* Real-time Theme customization dropdown option */}
+          <div className="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-900 px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800">
+            <Paintbrush className="w-4 h-4 text-neutral-550 text-neutral-500 dark:text-neutral-400" />
+            <select 
+              id="theme_dropdown_picker"
+              value={activeTheme} 
+              onChange={(e) => handleThemeChange(e.target.value)}
+              className="bg-transparent text-xs text-neutral-800 dark:text-neutral-200 font-medium focus:outline-none cursor-pointer"
+            >
+              {THEMES.map((t) => (
+                <option key={t.id} value={t.id} className="bg-white dark:bg-neutral-900 text-neutral-850 text-neutral-900 dark:text-neutral-100">{t.name}</option>
+              ))}
+            </select>
+          </div>
 
-            <div className="flex items-center gap-3 pl-2 border-l border-neutral-800">
+          {/* Light/Dark mode toggler switch */}
+          <button
+            id="light_dark_toggle_btn"
+            onClick={() => setDarkMode(!darkMode)}
+            className="p-2 bg-neutral-100 dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white rounded-lg border border-neutral-200 dark:border-neutral-800 transition cursor-pointer"
+            title={darkMode ? "Ativar Modo Claro" : "Ativar Modo Escuro"}
+          >
+            {darkMode ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4 text-violet-600" />}
+          </button>
+
+          {currentUser && (
+            <div className="flex items-center gap-3 pl-2 border-l border-neutral-200 dark:border-neutral-800">
               <div className="relative">
                 {currentUser.avatar ? (
-                  <img src={currentUser.avatar} alt="Avatar" className="w-9 h-9 rounded-full object-cover border-2 border-neutral-700" referrerPolicy="no-referrer" />
+                  <img src={currentUser.avatar} alt="Avatar" className="w-9 h-9 rounded-full object-cover border-2 border-neutral-200 dark:border-neutral-700" referrerPolicy="no-referrer" />
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-neutral-800 flex items-center justify-center text-sm font-bold text-white uppercase border border-neutral-700">
+                  <div className="w-9 h-9 rounded-full bg-neutral-100 dark:bg-neutral-855 dark:bg-neutral-800 flex items-center justify-center text-sm font-bold text-neutral-700 dark:text-neutral-200 uppercase border border-neutral-200 dark:border-neutral-700">
                     {currentUser.name.slice(0, 2)}
                   </div>
                 )}
-                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-neutral-950"></span>
+                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white dark:border-neutral-950"></span>
               </div>
               <div className="text-left hidden md:block">
-                <span className="text-xs text-neutral-400 block font-normal">Logado como:</span>
-                <span className="text-sm font-semibold text-white block">{currentUser.name}</span>
+                <span className="text-xs text-neutral-550 text-neutral-500 dark:text-neutral-400 block font-normal">Logado como:</span>
+                <span className="text-sm font-semibold text-neutral-805 text-neutral-900 dark:text-white block">{currentUser.name}</span>
               </div>
               <button
                 id="header_logout_btn"
                 onClick={handleLogout}
-                className="p-2 py-1.5 bg-neutral-900 hover:bg-neutral-800 text-neutral-400 hover:text-white rounded-lg transition text-xs flex items-center gap-2 border border-neutral-800 cursor-pointer"
+                className="p-2 py-1.5 bg-neutral-100 dark:bg-neutral-900 text-neutral-500 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white rounded-lg transition text-xs flex items-center gap-2 border border-neutral-200 dark:border-neutral-800 cursor-pointer"
                 title="Sair da plataforma"
               >
                 <LogOut className="w-4 h-4" />
                 Sair
               </button>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </header>
 
       {/* Main Content Stage */}
@@ -824,14 +919,14 @@ export default function App() {
                 id="login_submit_btn"
                 type="submit"
                 disabled={isLoading}
-                className={`w-full py-3.5 rounded-xl ${theme.primary} text-neutral-900 font-bold transition duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50`}
+                className={`w-full py-3.5 rounded-xl ${theme.primary} font-bold transition duration-200 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50`}
               >
                 {isLoading ? (
-                  <RefreshCw className="w-5 h-5 animate-spin text-neutral-950" />
+                  <RefreshCw className="w-5 h-5 animate-spin" />
                 ) : (
                   <>
                     <span>Entrar no Sistema</span>
-                    <ChevronRight className="w-4 h-4 text-neutral-955 text-neutral-950" />
+                    <ChevronRight className="w-4 h-4" />
                   </>
                 )}
               </button>
@@ -1143,7 +1238,7 @@ export default function App() {
                               <button
                                 id="add_workout_submit_btn"
                                 type="submit"
-                                className={`w-full py-2.5 rounded-xl ${theme.primary} text-neutral-950 font-bold transition duration-200 text-xs cursor-pointer flex items-center justify-center gap-1.5`}
+                                className={`w-full py-2.5 rounded-xl ${theme.primary} font-bold transition duration-200 text-xs cursor-pointer flex items-center justify-center gap-1.5`}
                               >
                                 <Plus className="w-4 h-4 text-neutral-950" />
                                 Adicionar Exercício ao Aluno
@@ -1397,10 +1492,114 @@ export default function App() {
                             <button
                               id="add_evaluation_submit_btn"
                               type="submit"
-                              className={`w-full py-2.5 rounded-xl ${theme.primary} text-neutral-950 font-bold transition duration-200 text-xs cursor-pointer flex items-center justify-center gap-1.5`}
+                              className={`w-full py-2.5 rounded-xl ${theme.primary} font-bold transition duration-200 text-xs cursor-pointer flex items-center justify-center gap-1.5`}
                             >
                               <PlusCircle className="w-4 h-4 text-neutral-950" />
                               Compilar e Salvar Avaliação Física
+                            </button>
+                          </form>
+                        </div>
+
+                        {/* DIET & NUTRITION MANAGER (Instructor only) */}
+                        <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6">
+                          <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-neutral-500 dark:text-neutral-400" />
+                            Acompanhamento de Dieta & Plano Alimentar ({clientDiets.length})
+                          </h3>
+
+                          {/* List of diets */}
+                          {clientDiets.length > 0 && (
+                            <div className="space-y-4 mb-6">
+                              <div className="flex gap-2 bg-neutral-100 dark:bg-neutral-950 p-2 rounded-xl overflow-x-auto">
+                                {clientDiets.map((dt) => (
+                                  <button
+                                    id={`select_diet_tab_btn_${dt.id}`}
+                                    key={dt.id}
+                                    onClick={() => setCurrentSelectedDiet(dt)}
+                                    className={`px-4 py-2 rounded-lg text-xs font-semibold shrink-0 transition cursor-pointer ${
+                                      currentSelectedDiet?.id === dt.id ? theme.primary : "bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white border border-neutral-200 dark:border-neutral-800"
+                                    }`}
+                                  >
+                                    Plano de {new Date(dt.diet_date).toLocaleDateString("pt-BR")}
+                                  </button>
+                                ))}
+                              </div>
+
+                              {currentSelectedDiet && (
+                                <div className="bg-neutral-50 dark:bg-neutral-950 p-5 rounded-2xl border border-neutral-150 dark:border-neutral-900 space-y-4">
+                                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-200 dark:border-neutral-900 pb-3">
+                                    <div>
+                                      <h4 className="text-sm font-bold text-neutral-900 dark:text-white">{currentSelectedDiet.title}</h4>
+                                      <p className="text-xs text-neutral-505 text-neutral-500 dark:text-neutral-400 font-mono">Prescrito em {new Date(currentSelectedDiet.diet_date).toLocaleDateString("pt-BR")}</p>
+                                    </div>
+                                    <button
+                                      id="delete_diet_btn"
+                                      onClick={() => handleDeleteDiet(currentSelectedDiet.id)}
+                                      className="p-1.5 border border-red-500/20 hover:bg-red-500/10 rounded-lg text-red-500 dark:text-red-400 transition cursor-pointer"
+                                      title="Excluir Plano Alimentar"
+                                    >
+                                      <Trash2 className="w-3.5 h-3.5" />
+                                    </button>
+                                  </div>
+
+                                  <div className="text-sm text-neutral-705 text-neutral-700 dark:text-neutral-300 leading-relaxed font-sans whitespace-pre-wrap text-left bg-white dark:bg-neutral-900/40 p-4 rounded-xl border border-neutral-200 dark:border-neutral-900">
+                                    {currentSelectedDiet.description}
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                          )}
+
+                          {/* Register Diet Form */}
+                          <form onSubmit={handleAddDiet} className="bg-neutral-50 dark:bg-neutral-950 p-5 rounded-2xl border border-neutral-150 dark:border-neutral-900 space-y-4">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Prescrever Novo Plano Alimentar / Dieta</h4>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                              <div>
+                                <label className="block text-[11px] text-neutral-500 dark:text-neutral-400 mb-1 font-medium">Data do Acompanhamento</label>
+                                <input
+                                  id="diet_date_input"
+                                  type="date"
+                                  value={newDietDate}
+                                  onChange={(e) => setNewDietDate(e.target.value)}
+                                  className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-900 dark:text-white"
+                                  required
+                                />
+                              </div>
+                              <div>
+                                <label className="block text-[11px] text-neutral-500 dark:text-neutral-400 mb-1 font-medium font-bold">Título da Dieta</label>
+                                <input
+                                  id="diet_title_input"
+                                  type="text"
+                                  placeholder="Ex: Fase Inicial - Definição Muscular"
+                                  value={newDietTitle}
+                                  onChange={(e) => setNewDietTitle(e.target.value)}
+                                  className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-900 dark:text-white"
+                                  required
+                                />
+                              </div>
+                            </div>
+
+                            <div>
+                              <label className="block text-[11px] text-neutral-505 text-neutral-500 dark:text-neutral-400 mb-1 font-medium">Detalhes das Refeições / Alimentos</label>
+                              <textarea
+                                id="diet_description_input"
+                                rows={6}
+                                placeholder="Descreva os horários e porções de cada refeição (Café da Manhã, Almoço, Lanches, Jantar)..."
+                                value={newDietDescription}
+                                onChange={(e) => setNewDietDescription(e.target.value)}
+                                className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:outline-none rounded-lg p-3 text-xs text-neutral-900 dark:text-white resize-none"
+                                required
+                              />
+                            </div>
+
+                            <button
+                              id="add_diet_submit_btn"
+                              type="submit"
+                              className={`w-full py-2.5 rounded-xl ${theme.primary} font-bold transition duration-200 text-xs cursor-pointer flex items-center justify-center gap-1.5`}
+                            >
+                              <PlusCircle className="w-4 h-4" />
+                              Salvar e Disponibilizar Dieta ao Aluno
                             </button>
                           </form>
                         </div>
@@ -1562,7 +1761,7 @@ export default function App() {
                     <button
                       id="register_client_submit_btn"
                       type="submit"
-                      className={`w-full py-3 rounded-xl ${theme.primary} text-neutral-950 font-bold transition duration-200 text-xs cursor-pointer flex items-center justify-center gap-1.5`}
+                      className={`w-full py-3 rounded-xl ${theme.primary} font-bold transition duration-200 text-xs cursor-pointer flex items-center justify-center gap-1.5`}
                     >
                       <Plus className="w-4 h-4 text-neutral-950" />
                       Cadastrar Aluno na Base
@@ -1626,7 +1825,7 @@ export default function App() {
                         <div className="text-left">
                           <strong className="text-xs text-white block">{p.client_name}</strong>
                           <span className="text-[10px] text-neutral-400 font-mono">Vencimento: Dia {p.payment_day} | Ref: {p.month}</span>
-                          <span className="text-xs block text-emerald-400 font-semibold mt-1">R$ {p.amount.toFixed(2)}</span>
+                          <span className="text-xs block text-emerald-400 font-semibold mt-1">R$ {Number(p.amount).toFixed(2)}</span>
                         </div>
                         <div className="flex items-center gap-2.5">
                           <input
@@ -1796,66 +1995,83 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Meal Dica / Alimentacao section */}
+              {/* Client Sidebar: Diet Timeline / Lock & PIX Payment */}
               <div className="lg:col-span-4 space-y-8 text-left">
                 
-                {/* Dica de Alimentacao (Demo sees exactly 1, Complete sees more) */}
-                <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 text-left relative overflow-hidden">
-                  <div className="absolute top-0 right-0 bg-neutral-800 text-neutral-400 py-1 px-2.5 rounded-bl-lg text-[10px] font-mono">
-                    SAÚDE INTEGRAL
-                  </div>
-                  
-                  <h3 className="text-lg font-extrabold text-white mb-4 flex items-center gap-2">
-                    <Sparkles className="w-5 h-5 text-amber-500" />
-                    Ideias Nutricionais Recomendadas
-                  </h3>
+                {/* Diet Timeline and Viewer for complete student, OR lock card for demo */}
+                {!currentUser.is_demo ? (
+                  clientDiets.length > 0 && (
+                    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 text-left">
+                      <h3 className="text-lg font-black text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-neutral-550 text-neutral-500 dark:text-neutral-400" />
+                        Meu Plano Alimentar & Dieta
+                      </h3>
 
-                  <div className="space-y-4">
-                    {/* Demo users see only 1 meal recipe; Complete users see multiple instructions */}
-                    {(currentUser.is_demo ? [mealTips[0]] : mealTips).map((tip, idx) => (
-                      <div key={idx} className="bg-neutral-955 bg-neutral-950 p-4 rounded-xl border border-neutral-900 text-left">
-                        <h4 className="text-xs font-black text-amber-400 uppercase tracking-widest">{tip.title}</h4>
-                        <p className="text-[11px] text-neutral-300 leading-relaxed mt-2">{tip.desc}</p>
-                        <span className="inline-block mt-3 px-2 py-0.5 bg-neutral-900 border border-neutral-800 text-[10px] rounded text-neutral-400">
-                          Função: {tip.target}
-                        </span>
+                      <div className="space-y-4">
+                        <div className="flex gap-2 p-1 bg-neutral-100 dark:bg-neutral-955 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-900 rounded-xl overflow-x-auto">
+                          {clientDiets.map((dt) => (
+                            <button
+                              id={`client_diet_timeline_btn_${dt.id}`}
+                              key={dt.id}
+                              onClick={() => setCurrentSelectedDiet(dt)}
+                              className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition cursor-pointer ${
+                                currentSelectedDiet?.id === dt.id ? theme.primary : "bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-800"
+                              }`}
+                            >
+                              Plano de {new Date(dt.diet_date).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}
+                            </button>
+                          ))}
+                        </div>
+
+                        {currentSelectedDiet && (
+                          <div className="bg-neutral-50 dark:bg-neutral-950 p-4 rounded-xl border border-neutral-150 dark:border-neutral-900 space-y-2 text-left">
+                            <h4 className="text-xs font-bold text-neutral-900 dark:text-white truncate">{currentSelectedDiet.title}</h4>
+                            <div className="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed font-sans whitespace-pre-wrap text-left bg-white dark:bg-neutral-900/40 p-3 rounded-lg border border-neutral-200 dark:border-neutral-900 max-h-60 overflow-y-auto">
+                              {currentSelectedDiet.description}
+                            </div>
+                          </div>
+                        )}
                       </div>
-                    ))}
-                  </div>
-                  
-                  {currentUser.is_demo && (
-                    <p className="text-[11px] text-neutral-500 italic mt-3 text-center">
-                      Assine o plano completo para desbloquear todas as ideias de refeições fitness!
+                    </div>
+                  )
+                ) : (
+                  <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 text-left">
+                    <h3 className="text-sm font-bold uppercase text-amber-500 flex items-center gap-1.5 mb-2">
+                      <Lock className="w-4 h-4 text-amber-500" />
+                      Gráficos & Dieta Bloqueados
+                    </h3>
+                    <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                      Ops! Você está no plano <strong>DEMO</strong>. O plano de dieta personalizado de 30 em 30 dias e gráficos de evolução estão disponíveis apenas no plano completo de acompanhamento.
                     </p>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {/* PIX AREA (COMPLETO ONY) */}
                 {!currentUser.is_demo && (
-                  <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 text-left">
-                    <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 text-left">
+                    <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-3 flex items-center gap-2">
                       <QrCode className="w-5 h-5 text-emerald-400" />
                       Pagar Mensalidade PIX
                     </h3>
-                    <p className="text-xs text-neutral-400 mb-4 leading-relaxed">
-                      Efetue seu pix de R$ 150,00 diretamente pela chave da personal e envie o comprovante pelo WhatsApp com um clique abaixo:
+                    <p className="text-xs text-neutral-505 text-neutral-500 dark:text-neutral-400 mb-4 leading-relaxed">
+                      Efetue seu pix de R$ 150,00 diretamente pela chave da personal:
                     </p>
 
-                    <div className="bg-neutral-950 p-3.5 rounded-xl border border-neutral-900 space-y-3.5 mb-4 text-center">
+                    <div className="bg-neutral-50 dark:bg-neutral-950 p-3.5 rounded-xl border border-neutral-150 dark:border-neutral-900 space-y-3.5 mb-4 text-center">
                       <div className="bg-white p-2 rounded-lg inline-block">
                         <QrCode className="w-24 h-24 text-black" />
                       </div>
-                      <div className="text-xs text-neutral-300 font-mono">
-                        Chave Pix: <strong className="text-white block select-all">41984842941</strong> (Celular)
+                      <div className="text-xs text-neutral-700 dark:text-neutral-300 font-mono">
+                        Chave Pix: <strong className="text-neutral-900 dark:text-white block select-all">41984842941</strong>
                       </div>
                     </div>
 
                     <button
                       id="client_whatsapp_pix_proof_btn"
                       onClick={() => triggerWhatsAppPixReceipt(currentUser)}
-                      className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-neutral-950 font-black rounded-xl text-xs transition duration-200 flex items-center justify-center gap-2 cursor-pointer"
+                      className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition duration-200 flex items-center justify-center gap-2 cursor-pointer"
                     >
-                      <MessageSquare className="w-4 h-4 text-neutral-950" />
+                      <MessageSquare className="w-4 h-4 text-white" />
                       Enviar comprovante via WhatsApp
                     </button>
                   </div>
@@ -1865,8 +2081,8 @@ export default function App() {
             </div>
 
             {/* EVOLUTION & ASSESSMENT CHART PROGRESS CARDS - Only for completo clients */}
-            {!currentUser.is_demo ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {!currentUser.is_demo && (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
                 
                 {/* Progression charts */}
                 <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 text-left">
@@ -1965,46 +2181,33 @@ export default function App() {
                             </div>
                           </div>
 
-                          <div className="bg-neutral-900/40 p-3.5 rounded-lg border border-neutral-910 text-left">
-                            <span className="text-xs font-bold text-neutral-350 text-neutral-300 block pb-2">Perímetros Corporais Gravados (cm):</span>
-                            <div className="grid grid-cols-2 gap-y-2 text-xs font-mono">
-                              <div><span className="text-neutral-500">PESCOÇO:</span> <strong className="text-white">{currentSelectedEvaluation.neck} cm</strong></div>
-                              <div><span className="text-neutral-500">TÓRAX:</span> <strong className="text-white">{currentSelectedEvaluation.chest} cm</strong></div>
-                              <div><span className="text-neutral-500">CINTURA:</span> <strong className="text-white">{currentSelectedEvaluation.waist} cm</strong></div>
-                              <div><span className="text-neutral-500">ABDÔMEN:</span> <strong className="text-white">{currentSelectedEvaluation.abdomen} cm</strong></div>
-                              <div><span className="text-neutral-500">QUADRIL:</span> <strong className="text-white">{currentSelectedEvaluation.hips} cm</strong></div>
-                              <div><span className="text-neutral-500">BRAÇOS (D/E):</span> <strong className="text-white">{currentSelectedEvaluation.arm_right}D / {currentSelectedEvaluation.arm_left}E cm</strong></div>
-                              <div><span className="text-neutral-500">COXAS (D/E):</span> <strong className="text-white">{currentSelectedEvaluation.thigh_right}D / {currentSelectedEvaluation.thigh_left}E cm</strong></div>
-                              <div><span className="text-neutral-505 text-neutral-500">PANTURRILHA (D/E):</span> <strong className="text-white">{currentSelectedEvaluation.calf_right}D / {currentSelectedEvaluation.calf_left}E cm</strong></div>
-                            </div>
+                          <div className="bg-neutral-955 bg-neutral-950 p-4 rounded-xl border border-neutral-900 grid grid-cols-2 sm:grid-cols-3 gap-y-3.5 gap-x-2 text-xs">
+                            <div><span className="text-neutral-500 block text-[10px]">PESCOÇO:</span> <strong className="text-white">{currentSelectedEvaluation.neck} cm</strong></div>
+                            <div><span className="text-neutral-500 block text-[10px]">TÓRAX:</span> <strong className="text-white">{currentSelectedEvaluation.chest} cm</strong></div>
+                            <div><span className="text-neutral-500 block text-[10px]">CINTURA:</span> <strong className="text-white">{currentSelectedEvaluation.waist} cm</strong></div>
+                            <div><span className="text-neutral-500 block text-[10px]">ABDÔMEN:</span> <strong className="text-white">{currentSelectedEvaluation.abdomen} cm</strong></div>
+                            <div><span className="text-neutral-500 block text-[10px]">QUADRIL:</span> <strong className="text-white">{currentSelectedEvaluation.hips} cm</strong></div>
+                            <div><span className="text-neutral-500 block text-[10px]">BRAÇO D / E:</span> <strong className="text-white">{currentSelectedEvaluation.arm_right} / {currentSelectedEvaluation.arm_left}</strong></div>
+                            <div><span className="text-neutral-500 block text-[10px]">COXA D / E:</span> <strong className="text-white">{currentSelectedEvaluation.thigh_right} / {currentSelectedEvaluation.thigh_left}</strong></div>
+                            <div><span className="text-neutral-500 block text-[10px]">PANTURRILHA D / E:</span> <strong className="text-white">{currentSelectedEvaluation.calf_right} / {currentSelectedEvaluation.calf_left}</strong></div>
                           </div>
 
-                          {/* Photos side by side */}
                           {(currentSelectedEvaluation.photo_front || currentSelectedEvaluation.photo_side) && (
-                            <div className="space-y-2 pt-2 border-t border-neutral-900">
-                              <span className="text-[11px] text-neutral-400 block font-bold uppercase tracking-widest">Fotos de Comparação Opcionais (Side-by-Side):</span>
-                              <div className="grid grid-cols-2 gap-2.5">
-                                {currentSelectedEvaluation.photo_front ? (
-                                  <div className="bg-neutral-900 p-1.5 rounded-lg text-center">
-                                    <span className="text-[9px] text-neutral-500 block pb-1">Frente</span>
-                                    <img src={currentSelectedEvaluation.photo_front} alt="Frente" className="w-full h-44 object-cover rounded" referrerPolicy="no-referrer" />
-                                  </div>
-                                ) : (
-                                  <div className="h-44 bg-neutral-900 rounded flex items-center justify-center text-neutral-600 text-[10px]">Frente do corpo sem foto</div>
-                                )}
-
-                                {currentSelectedEvaluation.photo_side ? (
-                                  <div className="bg-neutral-900 p-1.5 rounded-lg text-center">
-                                    <span className="text-[9px] text-neutral-500 block pb-1">Perfil / Lado</span>
-                                    <img src={currentSelectedEvaluation.photo_side} alt="Lado" className="w-full h-44 object-cover rounded" referrerPolicy="no-referrer" />
-                                  </div>
-                                ) : (
-                                  <div className="h-44 bg-neutral-900 rounded flex items-center justify-center text-neutral-600 text-[10px]">Perfil sem foto lateral</div>
-                                )}
-                              </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                              {currentSelectedEvaluation.photo_front && (
+                                <div className="text-center">
+                                  <span className="text-[10px] text-neutral-400 font-bold block mb-1">REGISTRO FRONTAL</span>
+                                  <img src={currentSelectedEvaluation.photo_front} alt="Comparador Frontal" className="w-full h-80 object-cover rounded-lg border border-neutral-800" referrerPolicy="no-referrer" />
+                                </div>
+                              )}
+                              {currentSelectedEvaluation.photo_side && (
+                                <div className="text-center">
+                                  <span className="text-[10px] text-neutral-400 font-bold block mb-1">REGISTRO LATERAL</span>
+                                  <img src={currentSelectedEvaluation.photo_side} alt="Comparador Lateral" className="w-full h-80 object-cover rounded-lg border border-neutral-800" referrerPolicy="no-referrer" />
+                                </div>
+                              )}
                             </div>
                           )}
-
                         </div>
                       )}
 
@@ -2013,21 +2216,11 @@ export default function App() {
                 </div>
 
               </div>
-            ) : (
-              <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-8 text-neutral-400 text-left">
-                <h3 className="text-sm font-bold uppercase text-amber-450 text-amber-500 flex items-center gap-1.5 mb-2">
-                  <Lock className="w-4 h-4 text-amber-500" />
-                  Gráficos de Progresso Físico Indisponíveis
-                </h3>
-                <p className="text-xs text-neutral-350 text-neutral-300 leading-relaxed">
-                  Ops! Você está navegando na versão <strong>DEMO</strong> de degustação do nosso portal de saúde. A versão DEMO restringe a geração do dashboard de análise corporal e os gráficos interativos de evolução da porcentagem de gordura, IMC automático e perímetros de circunferência. Converse com a instrutora para realizar o upgrade para o plano completo de acompanhamento personalizado!
-                </p>
-              </div>
             )}
 
             {/* Daily Exercise completion graph block - available only for completos */}
             {!currentUser.is_demo && workoutLogHistory.length > 0 && (
-              <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 text-left">
+              <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 text-left mt-8">
                 <h3 className="text-lg font-black text-white mb-4 flex items-center gap-2">
                   <Activity className="w-5 h-5 text-emerald-400" />
                   Engajamento e Conclusões de Treino Diários
@@ -2091,9 +2284,9 @@ export default function App() {
                 <button
                   id="submit_swap_btn"
                   type="submit"
-                  className={`w-1/2 py-2.5 rounded-xl ${theme.primary} text-neutral-950 font-bold transition duration-150 text-xs cursor-pointer flex items-center justify-center gap-1`}
+                  className={`w-1/2 py-2.5 rounded-xl ${theme.primary} font-bold transition duration-150 text-xs cursor-pointer flex items-center justify-center gap-1`}
                 >
-                  <Send className="w-4 text-neutral-950" />
+                  <Send className="w-4" />
                   Enviar Solicitação
                 </button>
               </div>

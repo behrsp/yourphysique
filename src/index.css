@@ -6,3 +6,20 @@
   --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
+html:not(.dark), :root:not(.dark) {
+  --color-neutral-950: #f9fafb; /* bg-neutral-50 */
+  --color-neutral-900: #ffffff; /* bg-white */
+  --color-neutral-955: #f3f4f6; /* bg-neutral-100 */
+  --color-neutral-850: #f3f4f6; /* bg-neutral-100 */
+  --color-neutral-800: #e5e7eb; /* border-neutral-200 */
+  --color-neutral-700: #d1d5db; /* border-neutral-300 */
+  
+  /* Text variables overrides */
+  --color-neutral-100: #111827; /* text-neutral-900 */
+  --color-neutral-200: #1f2937; /* text-neutral-800 */
+  --color-neutral-300: #374151; /* text-neutral-700 */
+  --color-neutral-400: #4b5563; /* text-neutral-600 */
+  --color-neutral-500: #6b7280; /* text-neutral-500 */
+  --color-neutral-600: #9ca3af; /* text-neutral-400 */
+}
+
