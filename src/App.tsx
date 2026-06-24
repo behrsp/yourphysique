@@ -873,19 +873,39 @@ export default function App() {
 
         <div className="flex flex-wrap items-center gap-4">
           
-          {/* Real-time Theme customization dropdown option */}
-          <div className="flex items-center gap-2 bg-neutral-850 px-3 py-1.5 rounded-lg border border-neutral-800">
-            <Paintbrush className="w-4 h-4 text-neutral-550 text-neutral-400" />
-            <select 
-              id="theme_dropdown_picker"
-              value={activeTheme} 
-              onChange={(e) => handleThemeChange(e.target.value)}
-              className="bg-transparent text-xs text-neutral-200 font-medium focus:outline-none cursor-pointer"
-            >
-              {THEMES.map((t) => (
-                <option key={t.id} value={t.id} className="bg-neutral-900 text-neutral-850 text-neutral-900 dark:text-neutral-100">{t.name}</option>
-              ))}
-            </select>
+          {/* Real-time Theme customization bubble palette */}
+          <div className="flex items-center gap-2.5 bg-neutral-850 px-3.5 py-2 rounded-xl border border-neutral-800">
+            <div className="flex items-center gap-1.5 text-neutral-400 text-xs font-semibold mr-0.5">
+              <Paintbrush className="w-3.5 h-3.5" />
+              <span>Tema:</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              {THEMES.map((t) => {
+                let dotBg = "bg-emerald-500";
+                if (t.id === "violet") dotBg = "bg-violet-500";
+                if (t.id === "cyan") dotBg = "bg-cyan-500";
+                if (t.id === "rose") dotBg = "bg-rose-500";
+                if (t.id === "amber") dotBg = "bg-amber-500";
+
+                const isActive = activeTheme === t.id;
+
+                return (
+                  <button
+                    key={t.id}
+                    id={`theme_bubble_${t.id}`}
+                    onClick={() => handleThemeChange(t.id)}
+                    title={t.name}
+                    className={`w-5 h-5 rounded-full ${dotBg} transition-all duration-200 cursor-pointer flex items-center justify-center relative hover:scale-110 focus:outline-none ${
+                      isActive ? "ring-2 ring-offset-2 ring-neutral-400 dark:ring-offset-neutral-950 scale-105" : "opacity-75 hover:opacity-100"
+                    }`}
+                  >
+                    {isActive && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-white dark:bg-neutral-950"></span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
 
           {/* Light/Dark mode toggler switch */}
