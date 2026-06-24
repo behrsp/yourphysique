@@ -1722,7 +1722,7 @@ export default function App() {
                         placeholder="Ex: João da Silva"
                         value={newClientName}
                         onChange={(e) => setNewClientName(e.target.value)}
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-white"
+                        className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-neutral-100"
                         required
                       />
                     </div>
@@ -1736,7 +1736,7 @@ export default function App() {
                           placeholder="Ex: 41999999999"
                           value={newClientPhone}
                           onChange={(e) => setNewClientPhone(e.target.value.replace(/\D/g, ""))}
-                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-white"
+                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-neutral-100"
                           required
                         />
                       </div>
@@ -1748,7 +1748,7 @@ export default function App() {
                           placeholder="••••••"
                           value={newClientPassword}
                           onChange={(e) => setNewClientPassword(e.target.value)}
-                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-white"
+                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-neutral-100"
                           required
                         />
                       </div>
@@ -1763,7 +1763,7 @@ export default function App() {
                           placeholder="25"
                           value={newClientAge}
                           onChange={(e) => setNewClientAge(e.target.value)}
-                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-white"
+                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-neutral-100"
                         />
                       </div>
                       <div>
@@ -1774,7 +1774,7 @@ export default function App() {
                           placeholder="70"
                           value={newClientWeight}
                           onChange={(e) => setNewClientWeight(e.target.value)}
-                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-white"
+                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-neutral-100"
                         />
                       </div>
                       <div>
@@ -1786,7 +1786,7 @@ export default function App() {
                           placeholder="1.70"
                           value={newClientHeight}
                           onChange={(e) => setNewClientHeight(e.target.value)}
-                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-white"
+                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-3 py-2.5 text-xs text-neutral-100"
                         />
                       </div>
                     </div>
@@ -1799,7 +1799,7 @@ export default function App() {
                         placeholder="Ex: Lesão no joelho esquerdo"
                         value={newClientIssue}
                         onChange={(e) => setNewClientIssue(e.target.value)}
-                        className="w-full bg-neutral-955 bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-white"
+                        className="w-full bg-neutral-955 bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-neutral-100"
                       />
                     </div>
 
@@ -1809,7 +1809,7 @@ export default function App() {
                         id="register_client_goal"
                         value={newClientGoal}
                         onChange={(e) => setNewClientGoal(e.target.value)}
-                        className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-white cursor-pointer"
+                        className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-4 py-2.5 text-xs text-neutral-100 cursor-pointer"
                       >
                         <option value="Perda de Peso">Perda de Peso / Emagrecimento</option>
                         <option value="Ganho de Massa">Ganho de Massa Muscular</option>
@@ -1839,7 +1839,7 @@ export default function App() {
                           value={newClientPaymentDay}
                           disabled={newClientIsDemo}
                           onChange={(e) => setNewClientPaymentDay(e.target.value)}
-                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-3 py-2 text-xs text-white disabled:opacity-40"
+                          className="w-full bg-neutral-950 border border-neutral-800 focus:outline-none rounded-xl px-3 py-2 text-xs text-neutral-100 disabled:opacity-40"
                         />
                       </div>
                     </div>
