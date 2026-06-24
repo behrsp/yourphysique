@@ -862,9 +862,13 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Express server successfully initialized on http://localhost:${PORT}`);
-  });
+  if (!process.env.VERCEL) {
+    app.listen(PORT, "0.0.0.0", () => {
+      console.log(`Express server successfully initialized on http://localhost:${PORT}`);
+    });
+  }
 }
 
 startServer();
+
+export default app;
