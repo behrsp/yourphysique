@@ -800,7 +800,7 @@ export default function App() {
             </div>
             <h1 className="text-2xl font-bold font-sans tracking-tight mb-2">Conta Congelada</h1>
             <p className="text-neutral-400 text-sm mb-6 leading-relaxed">
-              Olá, <strong className="text-white">{currentUser.name}</strong>. Constatamos que sua mensalidade está pendente há mais de 4 dias do seu dia de pagamento previsto (Dia {currentUser.payment_day}). Para continuar de forma consistente o acompanhamento de peso, medidas corporais automáticas, fotos de progresso e treinos, realize o pagamento via PIX.
+              Olá, <strong className="text-neutral-100">{currentUser.name}</strong>. Constatamos que sua mensalidade está pendente há mais de 4 dias do seu dia de pagamento previsto (Dia {currentUser.payment_day}). Para continuar de forma consistente o acompanhamento de peso, medidas corporais automáticas, fotos de progresso e treinos, realize o pagamento via PIX.
             </p>
 
             {/* Pix Section details */}
@@ -810,7 +810,7 @@ export default function App() {
                 <span className={`text-xs ${theme.text} font-bold`}>{pixKey}</span>
               </div>
               <div className="text-sm font-sans font-medium text-neutral-200 mb-4 text-center">
-                Chave Celular Personal: <strong className="text-white">{pixKey}</strong>
+                Chave Celular Personal: <strong className="text-neutral-100">{pixKey}</strong>
               </div>
               
               {/* Manual QR Code graphics */}
@@ -855,17 +855,17 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 flex flex-col font-sans transition-colors duration-200">
+    <div className="min-h-screen bg-neutral-950 text-neutral-100 flex flex-col font-sans transition-colors duration-200">
       
       {/* Dynamic Header Navbar with Active Custom Accents */}
-      <header className="border-b border-neutral-200 dark:border-neutral-900 bg-white dark:bg-neutral-950 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 sticky top-0 z-50">
+      <header className="border-b border-neutral-800 bg-neutral-900 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 sticky top-0 z-50">
         <div className="flex items-center gap-3">
           <div className={`p-2.5 rounded-xl ${theme.bgAccent} ${theme.text}`}>
             <Dumbbell className="w-7 h-7" />
           </div>
           <div>
-            <h1 className="text-xl font-extrabold tracking-tight text-neutral-900 dark:text-white flex items-center gap-2">
-              AvaliaFit <span className="text-xs px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-700 font-normal">Health & Assessment Portal</span>
+            <h1 className="text-xl font-extrabold tracking-tight text-neutral-100 flex items-center gap-2">
+              AvaliaFit <span className="text-xs px-2 py-0.5 rounded-full bg-neutral-100 dark:bg-neutral-800 text-neutral-400 border border-neutral-200 dark:border-neutral-700 font-normal">Health & Assessment Portal</span>
             </h1>
             <p className="text-[11px] text-neutral-500 font-mono">CONEXÃO NEON: ONLINE e SEGURO</p>
           </div>
@@ -874,16 +874,16 @@ export default function App() {
         <div className="flex flex-wrap items-center gap-4">
           
           {/* Real-time Theme customization dropdown option */}
-          <div className="flex items-center gap-2 bg-neutral-100 dark:bg-neutral-900 px-3 py-1.5 rounded-lg border border-neutral-200 dark:border-neutral-800">
-            <Paintbrush className="w-4 h-4 text-neutral-550 text-neutral-500 dark:text-neutral-400" />
+          <div className="flex items-center gap-2 bg-neutral-850 px-3 py-1.5 rounded-lg border border-neutral-800">
+            <Paintbrush className="w-4 h-4 text-neutral-550 text-neutral-400" />
             <select 
               id="theme_dropdown_picker"
               value={activeTheme} 
               onChange={(e) => handleThemeChange(e.target.value)}
-              className="bg-transparent text-xs text-neutral-800 dark:text-neutral-200 font-medium focus:outline-none cursor-pointer"
+              className="bg-transparent text-xs text-neutral-200 font-medium focus:outline-none cursor-pointer"
             >
               {THEMES.map((t) => (
-                <option key={t.id} value={t.id} className="bg-white dark:bg-neutral-900 text-neutral-850 text-neutral-900 dark:text-neutral-100">{t.name}</option>
+                <option key={t.id} value={t.id} className="bg-neutral-900 text-neutral-850 text-neutral-900 dark:text-neutral-100">{t.name}</option>
               ))}
             </select>
           </div>
@@ -892,32 +892,32 @@ export default function App() {
           <button
             id="light_dark_toggle_btn"
             onClick={() => setDarkMode(!darkMode)}
-            className="p-2 bg-neutral-100 dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-950 dark:hover:text-white rounded-lg border border-neutral-200 dark:border-neutral-800 transition cursor-pointer"
+            className="p-2 bg-neutral-850 text-neutral-400 hover:text-neutral-950 dark:hover:text-white rounded-lg border border-neutral-800 transition cursor-pointer"
             title={darkMode ? "Ativar Modo Claro" : "Ativar Modo Escuro"}
           >
             {darkMode ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4 text-violet-600" />}
           </button>
 
           {currentUser && (
-            <div className="flex items-center gap-3 pl-2 border-l border-neutral-200 dark:border-neutral-800">
+            <div className="flex items-center gap-3 pl-2 border-l border-neutral-800">
               <div className="relative">
                 {currentUser.avatar ? (
                   <img src={currentUser.avatar} alt="Avatar" className="w-9 h-9 rounded-full object-cover border-2 border-neutral-200 dark:border-neutral-700" referrerPolicy="no-referrer" />
                 ) : (
-                  <div className="w-9 h-9 rounded-full bg-neutral-100 dark:bg-neutral-855 dark:bg-neutral-800 flex items-center justify-center text-sm font-bold text-neutral-700 dark:text-neutral-200 uppercase border border-neutral-200 dark:border-neutral-700">
+                  <div className="w-9 h-9 rounded-full bg-neutral-850 flex items-center justify-center text-sm font-bold text-neutral-700 dark:text-neutral-200 uppercase border border-neutral-200 dark:border-neutral-700">
                     {currentUser.name.slice(0, 2)}
                   </div>
                 )}
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border border-white dark:border-neutral-950"></span>
               </div>
               <div className="text-left hidden md:block">
-                <span className="text-xs text-neutral-550 text-neutral-500 dark:text-neutral-400 block font-normal">Logado como:</span>
-                <span className="text-sm font-semibold text-neutral-805 text-neutral-900 dark:text-white block">{currentUser.name}</span>
+                <span className="text-xs text-neutral-550 text-neutral-400 block font-normal">Logado como:</span>
+                <span className="text-sm font-semibold text-neutral-805 text-neutral-100 block">{currentUser.name}</span>
               </div>
               <button
                 id="header_logout_btn"
                 onClick={handleLogout}
-                className="p-2 py-1.5 bg-neutral-100 dark:bg-neutral-900 text-neutral-500 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white rounded-lg transition text-xs flex items-center gap-2 border border-neutral-200 dark:border-neutral-800 cursor-pointer"
+                className="p-2 py-1.5 bg-neutral-850 text-neutral-500 hover:text-neutral-950 dark:text-neutral-400 dark:hover:text-white rounded-lg transition text-xs flex items-center gap-2 border border-neutral-800 cursor-pointer"
                 title="Sair da plataforma"
               >
                 <LogOut className="w-4 h-4" />
@@ -936,7 +936,7 @@ export default function App() {
           <div className="max-w-md mx-auto my-12 bg-neutral-900 border border-neutral-800 rounded-3xl p-8 shadow-2xl relative overflow-hidden">
             <div className={`absolute top-0 left-0 right-0 h-[4px] ${theme.primary}`}></div>
             <div className="text-center mb-8">
-              <h2 className="text-2xl font-black font-sans text-white tracking-tight">Entrar na Plataforma</h2>
+              <h2 className="text-2xl font-black font-sans text-neutral-100 tracking-tight">Entrar na Plataforma</h2>
               <p className="text-xs text-neutral-400 mt-2 leading-relaxed">
                 Digite o seu número de celular com DDD e sua senha fornecida pela instrutora para acessar sua planilha de treinos e avaliações.
               </p>
@@ -958,7 +958,7 @@ export default function App() {
                   placeholder="EX: 41984842941"
                   value={loginPhone}
                   onChange={(e) => setLoginPhone(e.target.value.replace(/\D/g, ""))}
-                  className="w-full bg-neutral-950 border border-neutral-800 focus:border-neutral-700 focus:outline-none rounded-xl px-4 py-3 text-white text-sm"
+                  className="w-full bg-neutral-950 border border-neutral-800 focus:border-neutral-700 focus:outline-none rounded-xl px-4 py-3 text-neutral-100 text-sm"
                   required
                 />
               </div>
@@ -971,7 +971,7 @@ export default function App() {
                   placeholder="••••••"
                   value={loginPassword}
                   onChange={(e) => setLoginPassword(e.target.value)}
-                  className="w-full bg-neutral-950 border border-neutral-800 focus:border-neutral-700 focus:outline-none rounded-xl px-4 py-3 text-white text-sm"
+                  className="w-full bg-neutral-950 border border-neutral-800 focus:border-neutral-700 focus:outline-none rounded-xl px-4 py-3 text-neutral-100 text-sm"
                   required
                 />
               </div>
@@ -1006,7 +1006,7 @@ export default function App() {
                 <div className="flex items-center justify-between">
                   <div className="text-left">
                     <span className="text-xs text-neutral-400 block pb-1">Total de Alunos</span>
-                    <strong className="text-3xl font-black text-white">{clients.filter(c => c.role !== "admin" && c.phone !== "41984842941" && c.phone !== "41991455646").length}</strong>
+                    <strong className="text-3xl font-black text-neutral-100">{clients.filter(c => c.role !== "admin" && c.phone !== "41984842941" && c.phone !== "41991455646").length}</strong>
                   </div>
                   <UserCheck className={`w-8 h-8 ${theme.text}`} />
                 </div>
@@ -1015,7 +1015,7 @@ export default function App() {
                 <div className="flex items-center justify-between">
                   <div className="text-left">
                     <span className="text-xs text-neutral-400 block pb-1">Mensalidades Pagas</span>
-                    <strong className="text-3xl font-black text-white">{payments.filter(p => p.status === "Pago").length}</strong>
+                    <strong className="text-3xl font-black text-neutral-100">{payments.filter(p => p.status === "Pago").length}</strong>
                   </div>
                   <CheckCircle className="w-8 h-8 text-emerald-500" />
                 </div>
@@ -1033,7 +1033,7 @@ export default function App() {
                 <div className="flex items-center justify-between">
                   <div className="text-left">
                     <span className="text-xs text-neutral-400 block pb-1">Solicitações de Troca</span>
-                    <strong className="text-3xl font-black text-white">{messages.filter(m => m.status === "Pendente").length}</strong>
+                    <strong className="text-3xl font-black text-neutral-100">{messages.filter(m => m.status === "Pendente").length}</strong>
                   </div>
                   <MessageCircle className="w-8 h-8 text-amber-500" />
                 </div>
@@ -1075,7 +1075,7 @@ export default function App() {
                         )}
                       </div>
                       
-                      <div className="text-xs font-semibold text-white max-w-[80px] truncate leading-tight">{c.name.split(" ")[0]}</div>
+                      <div className="text-xs font-semibold text-neutral-100 max-w-[80px] truncate leading-tight">{c.name.split(" ")[0]}</div>
                       <div className="text-[9px] text-neutral-400 mt-0.5">{c.is_demo ? "Demo" : "Completo"}</div>
                     </button>
                   );
@@ -1114,7 +1114,7 @@ export default function App() {
                               )}
                             </div>
                             <div>
-                              <h2 className="text-xl font-black text-white flex items-center gap-2">
+                              <h2 className="text-xl font-black text-neutral-100 flex items-center gap-2">
                                 {focusedClient.name}
                                 {focusedClient.role === "admin" && (
                                   <span className="bg-purple-500/10 text-purple-400 border border-purple-500/20 text-[10px] uppercase font-black tracking-wider px-2 py-0.5 rounded">
@@ -1124,8 +1124,8 @@ export default function App() {
                               </h2>
                               <p className="text-xs text-neutral-400 font-mono">Celular / Login:  {focusedClient.phone}  |  Idade: {focusedClient.age} anos  |  Dia de vencimento: Dia {focusedClient.payment_day}</p>
                               <div className="mt-2 flex flex-wrap gap-2">
-                                <span className="bg-neutral-950 border border-neutral-800 text-[11px] px-2.5 py-1 rounded-md">Peso: <strong className="text-white">{focusedClient.weight} kg</strong></span>
-                                <span className="bg-neutral-950 border border-neutral-800 text-[11px] px-2.5 py-1 rounded-md">Altura: <strong className="text-white">{focusedClient.height} m</strong></span>
+                                <span className="bg-neutral-950 border border-neutral-800 text-[11px] px-2.5 py-1 rounded-md">Peso: <strong className="text-neutral-100">{focusedClient.weight} kg</strong></span>
+                                <span className="bg-neutral-950 border border-neutral-800 text-[11px] px-2.5 py-1 rounded-md">Altura: <strong className="text-neutral-100">{focusedClient.height} m</strong></span>
                                 {focusedClient.physical_issue && (
                                   <span className="bg-red-500/10 text-red-400 border border-red-500/10 text-[11px] px-2.5 py-1 rounded-md">Restrição: {focusedClient.physical_issue}</span>
                                 )}
@@ -1194,7 +1194,7 @@ export default function App() {
 
                         {/* WORKOUT PLAN / TRACKER EDITOR */}
                         <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6">
-                          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                          <h3 className="text-lg font-bold text-neutral-100 mb-4 flex items-center gap-2">
                             <Dumbbell className="w-5 h-5 text-neutral-400" />
                             Planejamento de Exercícios ({clientWorkouts.length})
                           </h3>
@@ -1210,7 +1210,7 @@ export default function App() {
                             {clientWorkouts.map((w) => (
                               <div key={w.id} className="bg-neutral-955 p-4 rounded-2xl border border-neutral-900 flex flex-col md:flex-row md:items-center justify-between gap-4">
                                 <div>
-                                  <h4 className="text-sm font-extrabold text-white">{w.name}</h4>
+                                  <h4 className="text-sm font-extrabold text-neutral-100">{w.name}</h4>
                                   <div className="text-xs text-neutral-400 space-x-3 mt-1">
                                     <span>Séries: <strong className="text-neutral-200">{w.sets}</strong></span>
                                     <span>Repetições: <strong className="text-neutral-200">{w.reps}</strong></span>
@@ -1253,7 +1253,7 @@ export default function App() {
                                     placeholder="Agachamento Livre"
                                     value={wName}
                                     onChange={(e) => setWName(e.target.value)}
-                                    className="w-full bg-neutral-910 bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-white"
+                                    className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-100"
                                     required
                                   />
                                 </div>
@@ -1266,7 +1266,7 @@ export default function App() {
                                     max="10"
                                     value={wSets}
                                     onChange={(e) => setWSets(e.target.value)}
-                                    className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-white"
+                                    className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-100"
                                     required
                                   />
                                 </div>
@@ -1278,7 +1278,7 @@ export default function App() {
                                     placeholder="12"
                                     value={wReps}
                                     onChange={(e) => setWReps(e.target.value)}
-                                    className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-white"
+                                    className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-100"
                                     required
                                   />
                                 </div>
@@ -1293,7 +1293,7 @@ export default function App() {
                                     placeholder="Ex: 15kg"
                                     value={wLoad}
                                     onChange={(e) => setWLoad(e.target.value)}
-                                    className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-white"
+                                    className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-100"
                                   />
                                 </div>
                                 <div>
@@ -1304,7 +1304,7 @@ export default function App() {
                                     placeholder="https://gfycat.com/..."
                                     value={wVideo}
                                     onChange={(e) => setWVideo(e.target.value)}
-                                    className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-white"
+                                    className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-100"
                                   />
                                 </div>
                               </div>
@@ -1317,7 +1317,7 @@ export default function App() {
                                   placeholder="Ex: Pausa ativa de 3 segundos na isometria mais profunda"
                                   value={wNotes}
                                   onChange={(e) => setWNotes(e.target.value)}
-                                  className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg p-3 text-xs text-white resize-none"
+                                  className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg p-3 text-xs text-neutral-100 resize-none"
                                 />
                               </div>
 
@@ -1335,7 +1335,7 @@ export default function App() {
 
                         {/* PHYSICAL EVALUATION MANAGER & FORM */}
                         <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6">
-                          <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                          <h3 className="text-lg font-bold text-neutral-100 mb-4 flex items-center gap-2">
                             <Activity className="w-5 h-5 text-neutral-400" />
                             Avaliações Físicas & Medidas Mandatórias ({clientEvaluations.length})
                           </h3>
@@ -1362,7 +1362,7 @@ export default function App() {
                                 <div className="bg-neutral-950 p-5 rounded-2xl border border-neutral-900 space-y-6">
                                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-900 pb-4">
                                     <div>
-                                      <h4 className="text-sm font-bold text-white">Relatório Auto-compilado de Medidas</h4>
+                                      <h4 className="text-sm font-bold text-neutral-100">Relatório Auto-compilado de Medidas</h4>
                                       <p className="text-xs text-neutral-400 font-mono">Realizado em {new Date(currentSelectedEvaluation.eval_date).toLocaleDateString()}</p>
                                     </div>
                                     <div className="flex flex-wrap gap-2">
@@ -1389,7 +1389,7 @@ export default function App() {
                                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
                                     <div className="bg-neutral-900 p-3 rounded-xl border border-neutral-800">
                                       <span className="text-[10px] text-neutral-400 block font-semibold uppercase">IMC Automático</span>
-                                      <strong className="text-lg font-black text-white">{currentSelectedEvaluation.imc}</strong>
+                                      <strong className="text-lg font-black text-neutral-100">{currentSelectedEvaluation.imc}</strong>
                                     </div>
                                     <div className="bg-neutral-900 p-3 rounded-xl border border-neutral-800">
                                       <span className="text-[10px] text-neutral-400 block font-semibold uppercase">% Gordura Corporal</span>
@@ -1397,11 +1397,11 @@ export default function App() {
                                     </div>
                                     <div className="bg-neutral-900 p-3 rounded-xl border border-neutral-800">
                                       <span className="text-[10px] text-neutral-400 block font-semibold uppercase">Peso Avaliado</span>
-                                      <strong className="text-lg font-black text-white">{currentSelectedEvaluation.weight} kg</strong>
+                                      <strong className="text-lg font-black text-neutral-100">{currentSelectedEvaluation.weight} kg</strong>
                                     </div>
                                     <div className="bg-neutral-900 p-3 rounded-xl border border-neutral-800">
                                       <span className="text-[10px] text-neutral-400 block font-semibold uppercase">Altura Avaliada</span>
-                                      <strong className="text-lg font-black text-white">{currentSelectedEvaluation.height} m</strong>
+                                      <strong className="text-lg font-black text-neutral-100">{currentSelectedEvaluation.height} m</strong>
                                     </div>
                                   </div>
 
@@ -1409,14 +1409,14 @@ export default function App() {
                                   <div className="bg-neutral-900/40 p-4 rounded-xl border border-neutral-900">
                                     <span className="text-xs font-bold text-neutral-300 block pb-3">Perímetros Corporais (cm):</span>
                                     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 text-sm font-mono text-left">
-                                      <div><span className="text-neutral-500 block text-[10px]">PESCOÇO:</span> <strong className="text-white">{currentSelectedEvaluation.neck} cm</strong></div>
-                                      <div><span className="text-neutral-500 block text-[10px]">TÓRAX:</span> <strong className="text-white">{currentSelectedEvaluation.chest} cm</strong></div>
-                                      <div><span className="text-neutral-500 block text-[10px]">CINTURA:</span> <strong className="text-white">{currentSelectedEvaluation.waist} cm</strong></div>
-                                      <div><span className="text-neutral-500 block text-[10px]">ABDÔMEN:</span> <strong className="text-white">{currentSelectedEvaluation.abdomen} cm</strong></div>
-                                      <div><span className="text-neutral-500 block text-[10px]">QUADRIL:</span> <strong className="text-white">{currentSelectedEvaluation.hips} cm</strong></div>
-                                      <div><span className="text-neutral-500 block text-[10px]">BRAÇO D / E:</span> <strong className="text-white">{currentSelectedEvaluation.arm_right} / {currentSelectedEvaluation.arm_left}</strong></div>
-                                      <div><span className="text-neutral-500 block text-[10px]">COXA D / E:</span> <strong className="text-white">{currentSelectedEvaluation.thigh_right} / {currentSelectedEvaluation.thigh_left}</strong></div>
-                                      <div><span className="text-neutral-500 block text-[10px]">PANTURRILHA D / E:</span> <strong className="text-white">{currentSelectedEvaluation.calf_right} / {currentSelectedEvaluation.calf_left}</strong></div>
+                                      <div><span className="text-neutral-400 block text-[10px]">PESCOÇO:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.neck} cm</strong></div>
+                                      <div><span className="text-neutral-400 block text-[10px]">TÓRAX:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.chest} cm</strong></div>
+                                      <div><span className="text-neutral-400 block text-[10px]">CINTURA:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.waist} cm</strong></div>
+                                      <div><span className="text-neutral-400 block text-[10px]">ABDÔMEN:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.abdomen} cm</strong></div>
+                                      <div><span className="text-neutral-400 block text-[10px]">QUADRIL:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.hips} cm</strong></div>
+                                      <div><span className="text-neutral-400 block text-[10px]">BRAÇO D / E:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.arm_right} / {currentSelectedEvaluation.arm_left}</strong></div>
+                                      <div><span className="text-neutral-400 block text-[10px]">COXA D / E:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.thigh_right} / {currentSelectedEvaluation.thigh_left}</strong></div>
+                                      <div><span className="text-neutral-400 block text-[10px]">PANTURRILHA D / E:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.calf_right} / {currentSelectedEvaluation.calf_left}</strong></div>
                                     </div>
                                   </div>
 
@@ -1457,7 +1457,7 @@ export default function App() {
                                   type="date"
                                   value={evalDate}
                                   onChange={(e) => setEvalDate(e.target.value)}
-                                  className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-white"
+                                  className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-100"
                                   required
                                 />
                               </div>
@@ -1470,7 +1470,7 @@ export default function App() {
                                   placeholder="72.5"
                                   value={evalWeight}
                                   onChange={(e) => setEvalWeight(e.target.value)}
-                                  className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-white"
+                                  className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-100"
                                   required
                                 />
                               </div>
@@ -1483,7 +1483,7 @@ export default function App() {
                                   placeholder="1.75"
                                   value={evalHeight}
                                   onChange={(e) => setEvalHeight(e.target.value)}
-                                  className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-white"
+                                  className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-100"
                                   required
                                 />
                               </div>
@@ -1493,54 +1493,54 @@ export default function App() {
 
                             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
                               <div>
-                                <label className="block text-[10px] text-neutral-500 mb-0.5 font-bold uppercase">PESCOÇO</label>
-                                <input id="eval_neck_input" type="number" step="0.1" placeholder="38" value={evalNeck} onChange={(e) => setEvalNeck(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-white" required />
+                                <label className="block text-[10px] text-neutral-400 mb-0.5 font-bold uppercase">PESCOÇO</label>
+                                <input id="eval_neck_input" type="number" step="0.1" placeholder="38" value={evalNeck} onChange={(e) => setEvalNeck(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-neutral-100" required />
                               </div>
                               <div>
-                                <label className="block text-[10px] text-neutral-500 mb-0.5 font-bold uppercase">TÓRAX</label>
-                                <input id="eval_chest_input" type="number" step="0.1" placeholder="95" value={evalChest} onChange={(e) => setEvalChest(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-white" required />
+                                <label className="block text-[10px] text-neutral-400 mb-0.5 font-bold uppercase">TÓRAX</label>
+                                <input id="eval_chest_input" type="number" step="0.1" placeholder="95" value={evalChest} onChange={(e) => setEvalChest(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-neutral-100" required />
                               </div>
                               <div>
-                                <label className="block text-[10px] text-neutral-500 mb-0.5 font-bold uppercase">CINTURA</label>
-                                <input id="eval_waist_input" type="number" step="0.1" placeholder="82" value={evalWaist} onChange={(e) => setEvalWaist(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-white" required />
+                                <label className="block text-[10px] text-neutral-400 mb-0.5 font-bold uppercase">CINTURA</label>
+                                <input id="eval_waist_input" type="number" step="0.1" placeholder="82" value={evalWaist} onChange={(e) => setEvalWaist(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-neutral-100" required />
                               </div>
                               <div>
-                                <label className="block text-[10px] text-neutral-500 mb-0.5 font-bold uppercase">ABDÔMEN</label>
-                                <input id="eval_abdomen_input" type="number" step="0.1" placeholder="85" value={evalAbdomen} onChange={(e) => setEvalAbdomen(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-white" required />
+                                <label className="block text-[10px] text-neutral-400 mb-0.5 font-bold uppercase">ABDÔMEN</label>
+                                <input id="eval_abdomen_input" type="number" step="0.1" placeholder="85" value={evalAbdomen} onChange={(e) => setEvalAbdomen(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-neutral-100" required />
                               </div>
                               <div>
-                                <label className="block text-[10px] text-neutral-500 mb-0.5 font-bold uppercase">QUADRIL</label>
-                                <input id="eval_hips_input" type="number" step="0.1" placeholder="102" value={evalHips} onChange={(e) => setEvalHips(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-white" required />
+                                <label className="block text-[10px] text-neutral-400 mb-0.5 font-bold uppercase">QUADRIL</label>
+                                <input id="eval_hips_input" type="number" step="0.1" placeholder="102" value={evalHips} onChange={(e) => setEvalHips(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-neutral-100" required />
                               </div>
                             </div>
 
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                               <div>
-                                <label className="block text-[10px] text-neutral-500 mb-0.5 font-bold uppercase">BRAÇO DIREITO</label>
-                                <input id="eval_arm_right_input" type="number" step="0.1" placeholder="32" value={evalArmR} onChange={(e) => setEvalArmR(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-white" required />
+                                <label className="block text-[10px] text-neutral-400 mb-0.5 font-bold uppercase">BRAÇO DIREITO</label>
+                                <input id="eval_arm_right_input" type="number" step="0.1" placeholder="32" value={evalArmR} onChange={(e) => setEvalArmR(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-neutral-100" required />
                               </div>
                               <div>
-                                <label className="block text-[10px] text-neutral-500 mb-0.5 font-bold uppercase">BRAÇO ESQUERDO</label>
-                                <input id="eval_arm_left_input" type="number" step="0.1" placeholder="31.8" value={evalArmL} onChange={(e) => setEvalArmL(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-white" required />
+                                <label className="block text-[10px] text-neutral-400 mb-0.5 font-bold uppercase">BRAÇO ESQUERDO</label>
+                                <input id="eval_arm_left_input" type="number" step="0.1" placeholder="31.8" value={evalArmL} onChange={(e) => setEvalArmL(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-neutral-100" required />
                               </div>
                               <div>
-                                <label className="block text-[10px] text-neutral-500 mb-0.5 font-bold uppercase">COXA DIREITA</label>
-                                <input id="eval_thigh_right_input" type="number" step="0.1" placeholder="56" value={evalThighR} onChange={(e) => setEvalThighR(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-white" required />
+                                <label className="block text-[10px] text-neutral-400 mb-0.5 font-bold uppercase">COXA DIREITA</label>
+                                <input id="eval_thigh_right_input" type="number" step="0.1" placeholder="56" value={evalThighR} onChange={(e) => setEvalThighR(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-neutral-100" required />
                               </div>
                               <div>
-                                <label className="block text-[10px] text-neutral-500 mb-0.5 font-bold uppercase">COXA ESQUERDA</label>
-                                <input id="eval_thigh_left_input" type="number" step="0.1" placeholder="55.8" value={evalThighL} onChange={(e) => setEvalThighL(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-white" required />
+                                <label className="block text-[10px] text-neutral-400 mb-0.5 font-bold uppercase">COXA ESQUERDA</label>
+                                <input id="eval_thigh_left_input" type="number" step="0.1" placeholder="55.8" value={evalThighL} onChange={(e) => setEvalThighL(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-neutral-100" required />
                               </div>
                             </div>
 
                             <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
                               <div>
-                                <label className="block text-[10px] text-neutral-500 mb-0.5 font-bold uppercase">PANTURRILHA DIREITA</label>
-                                <input id="eval_calf_right_input" type="number" step="0.1" placeholder="38.5" value={evalCalfR} onChange={(e) => setEvalCalfR(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-white" required />
+                                <label className="block text-[10px] text-neutral-400 mb-0.5 font-bold uppercase">PANTURRILHA DIREITA</label>
+                                <input id="eval_calf_right_input" type="number" step="0.1" placeholder="38.5" value={evalCalfR} onChange={(e) => setEvalCalfR(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-neutral-100" required />
                               </div>
                               <div>
-                                <label className="block text-[10px] text-neutral-500 mb-0.5 font-bold uppercase">PANTURRILHA ESQUERDA</label>
-                                <input id="eval_calf_left_input" type="number" step="0.1" placeholder="38.2" value={evalCalfL} onChange={(e) => setEvalCalfL(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-white" required />
+                                <label className="block text-[10px] text-neutral-400 mb-0.5 font-bold uppercase">PANTURRILHA ESQUERDA</label>
+                                <input id="eval_calf_left_input" type="number" step="0.1" placeholder="38.2" value={evalCalfL} onChange={(e) => setEvalCalfL(e.target.value)} className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded px-2 py-1.5 text-xs text-neutral-100" required />
                               </div>
                             </div>
 
@@ -1587,9 +1587,9 @@ export default function App() {
                         </div>
 
                         {/* DIET & NUTRITION MANAGER (Instructor only) */}
-                        <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6">
-                          <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
-                            <FileText className="w-5 h-5 text-neutral-500 dark:text-neutral-400" />
+                        <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6">
+                          <h3 className="text-lg font-bold text-neutral-100 mb-4 flex items-center gap-2">
+                            <FileText className="w-5 h-5 text-neutral-400" />
                             Acompanhamento de Dieta & Plano Alimentar ({clientDiets.length})
                           </h3>
 
@@ -1603,7 +1603,7 @@ export default function App() {
                                     key={dt.id}
                                     onClick={() => setCurrentSelectedDiet(dt)}
                                     className={`px-4 py-2 rounded-lg text-xs font-semibold shrink-0 transition cursor-pointer ${
-                                      currentSelectedDiet?.id === dt.id ? theme.primary : "bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white border border-neutral-200 dark:border-neutral-800"
+                                      currentSelectedDiet?.id === dt.id ? theme.primary : "bg-neutral-900 text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-white border border-neutral-800"
                                     }`}
                                   >
                                     Plano de {new Date(dt.diet_date).toLocaleDateString("pt-BR")}
@@ -1612,11 +1612,11 @@ export default function App() {
                               </div>
 
                               {currentSelectedDiet && (
-                                <div className="bg-neutral-50 dark:bg-neutral-950 p-5 rounded-2xl border border-neutral-150 dark:border-neutral-900 space-y-4">
-                                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-200 dark:border-neutral-900 pb-3">
+                                <div className="bg-neutral-950 p-5 rounded-2xl border border-neutral-150 dark:border-neutral-900 space-y-4">
+                                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-neutral-800 pb-3">
                                     <div>
-                                      <h4 className="text-sm font-bold text-neutral-900 dark:text-white">{currentSelectedDiet.title}</h4>
-                                      <p className="text-xs text-neutral-505 text-neutral-500 dark:text-neutral-400 font-mono">Prescrito em {new Date(currentSelectedDiet.diet_date).toLocaleDateString("pt-BR")}</p>
+                                      <h4 className="text-sm font-bold text-neutral-100">{currentSelectedDiet.title}</h4>
+                                      <p className="text-xs text-neutral-505 text-neutral-400 font-mono">Prescrito em {new Date(currentSelectedDiet.diet_date).toLocaleDateString("pt-BR")}</p>
                                     </div>
                                     <button
                                       id="delete_diet_btn"
@@ -1628,7 +1628,7 @@ export default function App() {
                                     </button>
                                   </div>
 
-                                  <div className="text-sm text-neutral-705 text-neutral-700 dark:text-neutral-300 leading-relaxed font-sans whitespace-pre-wrap text-left bg-white dark:bg-neutral-900/40 p-4 rounded-xl border border-neutral-200 dark:border-neutral-900">
+                                  <div className="text-sm text-neutral-705 text-neutral-700 dark:text-neutral-300 leading-relaxed font-sans whitespace-pre-wrap text-left bg-neutral-900/40 p-4 rounded-xl border border-neutral-800">
                                     {currentSelectedDiet.description}
                                   </div>
                                 </div>
@@ -1637,44 +1637,44 @@ export default function App() {
                           )}
 
                           {/* Register Diet Form */}
-                          <form onSubmit={handleAddDiet} className="bg-neutral-50 dark:bg-neutral-950 p-5 rounded-2xl border border-neutral-150 dark:border-neutral-900 space-y-4">
-                            <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">Prescrever Novo Plano Alimentar / Dieta</h4>
+                          <form onSubmit={handleAddDiet} className="bg-neutral-950 p-5 rounded-2xl border border-neutral-150 dark:border-neutral-900 space-y-4">
+                            <h4 className="text-xs font-bold uppercase tracking-wider text-neutral-400">Prescrever Novo Plano Alimentar / Dieta</h4>
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                               <div>
-                                <label className="block text-[11px] text-neutral-500 dark:text-neutral-400 mb-1 font-medium">Data do Acompanhamento</label>
+                                <label className="block text-[11px] text-neutral-400 mb-1 font-medium">Data do Acompanhamento</label>
                                 <input
                                   id="diet_date_input"
                                   type="date"
                                   value={newDietDate}
                                   onChange={(e) => setNewDietDate(e.target.value)}
-                                  className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-900 dark:text-white"
+                                  className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-100"
                                   required
                                 />
                               </div>
                               <div>
-                                <label className="block text-[11px] text-neutral-500 dark:text-neutral-400 mb-1 font-medium font-bold">Título da Dieta</label>
+                                <label className="block text-[11px] text-neutral-400 mb-1 font-medium font-bold">Título da Dieta</label>
                                 <input
                                   id="diet_title_input"
                                   type="text"
                                   placeholder="Ex: Fase Inicial - Definição Muscular"
                                   value={newDietTitle}
                                   onChange={(e) => setNewDietTitle(e.target.value)}
-                                  className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-900 dark:text-white"
+                                  className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg px-3 py-2 text-xs text-neutral-100"
                                   required
                                 />
                               </div>
                             </div>
 
                             <div>
-                              <label className="block text-[11px] text-neutral-505 text-neutral-500 dark:text-neutral-400 mb-1 font-medium">Detalhes das Refeições / Alimentos</label>
+                              <label className="block text-[11px] text-neutral-505 text-neutral-400 mb-1 font-medium">Detalhes das Refeições / Alimentos</label>
                               <textarea
                                 id="diet_description_input"
                                 rows={6}
                                 placeholder="Descreva os horários e porções de cada refeição (Café da Manhã, Almoço, Lanches, Jantar)..."
                                 value={newDietDescription}
                                 onChange={(e) => setNewDietDescription(e.target.value)}
-                                className="w-full bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 focus:outline-none rounded-lg p-3 text-xs text-neutral-900 dark:text-white resize-none"
+                                className="w-full bg-neutral-900 border border-neutral-800 focus:outline-none rounded-lg p-3 text-xs text-neutral-100 resize-none"
                                 required
                               />
                             </div>
@@ -1708,7 +1708,7 @@ export default function App() {
                 
                 {/* 1. REGISTER NEW CLIENT */}
                 <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6">
-                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-neutral-100 mb-4 flex items-center gap-2">
                     <UserIcon className={`w-5 h-5 ${theme.text}`} />
                     Cadastrar Aluno
                   </h3>
@@ -1857,7 +1857,7 @@ export default function App() {
 
                 {/* 2. SOLICITAÇÕES DE TROCA DE EXERCÍCIO */}
                 <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6">
-                  <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-neutral-100 mb-4 flex items-center gap-2">
                     <MessageSquare className="w-5 h-5 text-amber-500" />
                     Solicitações de Troca ({messages.filter(m => m.status === "Pendente").length})
                   </h3>
@@ -1894,7 +1894,7 @@ export default function App() {
                 {/* 3. CONTROLE FINANCEIRO DE PAGAMENTO COMPLETO */}
                 <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6">
                   <div className="flex items-center justify-between mb-4">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                    <h3 className="text-lg font-bold text-neutral-100 flex items-center gap-2">
                       <DollarSign className="w-5 h-5 text-emerald-500" />
                       Financeiro Mensal
                     </h3>
@@ -1935,7 +1935,7 @@ export default function App() {
 
                 {/* 4. CONFIGURAÇÕES DE COBRANÇA PIX */}
                 <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6">
-                  <h3 className="text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <h3 className="text-lg font-bold text-neutral-100 mb-3 flex items-center gap-2">
                     <QrCode className="w-5 h-5 text-emerald-450" />
                     Configuração PIX Recebimentos
                   </h3>
@@ -2044,8 +2044,8 @@ export default function App() {
                     <h2 className="text-2xl font-black text-white tracking-tight text-center sm:text-left">Eaí, {currentUser.name}! 👋</h2>
                     <p className="text-xs text-neutral-400 font-mono mt-0.5 text-center sm:text-left">Plano: <strong className={currentUser.is_demo ? "text-amber-500" : "text-cyan-400"}>{currentUser.is_demo ? "DEMONSTRAÇÃO (5 Exercícios Limitados)" : "COMPLETO (Acesso irrestrito)"}</strong></p>
                     <div className="mt-3 flex flex-wrap justify-center sm:justify-start gap-2.5">
-                      <span className="bg-neutral-950 px-3 py-1 text-xs border border-neutral-800 rounded-lg">Meu Peso: <strong className="text-white">{currentUser.weight} kg</strong></span>
-                      <span className="bg-neutral-950 px-3 py-1 text-xs border border-neutral-800 rounded-lg">Minha Altura: <strong className="text-white">{currentUser.height} m</strong></span>
+                      <span className="bg-neutral-950 px-3 py-1 text-xs border border-neutral-800 rounded-lg">Meu Peso: <strong className="text-neutral-100">{currentUser.weight} kg</strong></span>
+                      <span className="bg-neutral-950 px-3 py-1 text-xs border border-neutral-800 rounded-lg">Minha Altura: <strong className="text-neutral-100">{currentUser.height} m</strong></span>
                       <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1 text-xs rounded-lg">Objetivo: <strong className="text-emerald-300 font-bold">{currentUser.main_goal}</strong></span>
                       {currentUser.physical_issue && (
                         <span className="bg-red-500/10 text-red-500 border border-red-500/20 px-3 py-1 text-xs rounded-lg">Restrição Física: {currentUser.physical_issue}</span>
@@ -2063,7 +2063,7 @@ export default function App() {
                     <div className="text-xs text-amber-500 font-semibold">Plano Gratuito / Degustação</div>
                   ) : (
                     <div>
-                      <span className="text-xs block text-neutral-300">Vencimento mensal: <strong className="text-white">Todo dia {currentUser.payment_day}</strong></span>
+                      <span className="text-xs block text-neutral-300">Vencimento mensal: <strong className="text-neutral-100">Todo dia {currentUser.payment_day}</strong></span>
                       <span className="text-xs text-emerald-400 font-bold block mt-1 flex items-center gap-1">
                         <Unlock className="w-3" />
                         Acesso Ativo com Sucesso
@@ -2155,21 +2155,21 @@ export default function App() {
                 {/* Diet Timeline and Viewer for complete student, OR lock card for demo */}
                 {!currentUser.is_demo ? (
                   clientDiets.length > 0 && (
-                    <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 text-left">
-                      <h3 className="text-lg font-black text-neutral-900 dark:text-white mb-4 flex items-center gap-2">
-                        <FileText className="w-5 h-5 text-neutral-550 text-neutral-500 dark:text-neutral-400" />
+                    <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 text-left">
+                      <h3 className="text-lg font-black text-neutral-100 mb-4 flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-neutral-550 text-neutral-400" />
                         Meu Plano Alimentar & Dieta
                       </h3>
 
                       <div className="space-y-4">
-                        <div className="flex gap-2 p-1 bg-neutral-100 dark:bg-neutral-955 dark:bg-neutral-950 border border-neutral-200 dark:border-neutral-900 rounded-xl overflow-x-auto">
+                        <div className="flex gap-2 p-1 bg-neutral-100 dark:bg-neutral-955 dark:bg-neutral-950 border border-neutral-800 rounded-xl overflow-x-auto">
                           {clientDiets.map((dt) => (
                             <button
                               id={`client_diet_timeline_btn_${dt.id}`}
                               key={dt.id}
                               onClick={() => setCurrentSelectedDiet(dt)}
                               className={`px-3 py-1.5 rounded-lg text-xs font-bold shrink-0 transition cursor-pointer ${
-                                currentSelectedDiet?.id === dt.id ? theme.primary : "bg-white dark:bg-neutral-900 text-neutral-600 dark:text-neutral-400 border border-neutral-200 dark:border-neutral-800"
+                                currentSelectedDiet?.id === dt.id ? theme.primary : "bg-neutral-900 text-neutral-600 dark:text-neutral-400 border border-neutral-800"
                               }`}
                             >
                               Plano de {new Date(dt.diet_date).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" })}
@@ -2178,9 +2178,9 @@ export default function App() {
                         </div>
 
                         {currentSelectedDiet && (
-                          <div className="bg-neutral-50 dark:bg-neutral-950 p-4 rounded-xl border border-neutral-150 dark:border-neutral-900 space-y-2 text-left">
-                            <h4 className="text-xs font-bold text-neutral-900 dark:text-white truncate">{currentSelectedDiet.title}</h4>
-                            <div className="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed font-sans whitespace-pre-wrap text-left bg-white dark:bg-neutral-900/40 p-3 rounded-lg border border-neutral-200 dark:border-neutral-900 max-h-60 overflow-y-auto">
+                          <div className="bg-neutral-950 p-4 rounded-xl border border-neutral-150 dark:border-neutral-900 space-y-2 text-left">
+                            <h4 className="text-xs font-bold text-neutral-100 truncate">{currentSelectedDiet.title}</h4>
+                            <div className="text-xs text-neutral-700 dark:text-neutral-300 leading-relaxed font-sans whitespace-pre-wrap text-left bg-neutral-900/40 p-3 rounded-lg border border-neutral-800 max-h-60 overflow-y-auto">
                               {currentSelectedDiet.description}
                             </div>
                           </div>
@@ -2189,12 +2189,12 @@ export default function App() {
                     </div>
                   )
                 ) : (
-                  <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 text-left">
+                  <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 text-left">
                     <h3 className="text-sm font-bold uppercase text-amber-500 flex items-center gap-1.5 mb-2">
                       <Lock className="w-4 h-4 text-amber-500" />
                       Gráficos & Dieta Bloqueados
                     </h3>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">
+                    <p className="text-xs text-neutral-400 leading-relaxed">
                       Ops! Você está no plano <strong>DEMO</strong>. O plano de dieta personalizado de 30 em 30 dias e gráficos de evolução estão disponíveis apenas no plano completo de acompanhamento.
                     </p>
                   </div>
@@ -2202,16 +2202,16 @@ export default function App() {
 
                 {/* PIX AREA (COMPLETO ONY) */}
                 {!currentUser.is_demo && (
-                  <div className="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-3xl p-6 text-left">
-                    <h3 className="text-lg font-bold text-neutral-900 dark:text-white mb-3 flex items-center gap-2">
+                  <div className="bg-neutral-900 border border-neutral-800 rounded-3xl p-6 text-left">
+                    <h3 className="text-lg font-bold text-neutral-100 mb-3 flex items-center gap-2">
                       <QrCode className="w-5 h-5 text-emerald-400" />
                       Pagar Mensalidade PIX
                     </h3>
-                    <p className="text-xs text-neutral-500 dark:text-neutral-400 mb-4 leading-relaxed">
+                    <p className="text-xs text-neutral-400 mb-4 leading-relaxed">
                       Efetue seu pix de R$ 150,00 diretamente pela chave da personal:
                     </p>
 
-                    <div className="bg-neutral-50 dark:bg-neutral-950 p-3.5 rounded-xl border border-neutral-150 dark:border-neutral-900 space-y-3.5 mb-4 text-center">
+                    <div className="bg-neutral-950 p-3.5 rounded-xl border border-neutral-150 dark:border-neutral-900 space-y-3.5 mb-4 text-center">
                       {pixQrCode ? (
                         <div className="bg-white p-2 rounded-lg inline-block w-40 h-40">
                           <img src={pixQrCode} alt="QR Code PIX" className="w-full h-full object-contain mx-auto" referrerPolicy="no-referrer" />
@@ -2222,7 +2222,7 @@ export default function App() {
                         </div>
                       )}
                       <div className="text-xs text-neutral-700 dark:text-neutral-300 font-mono">
-                        Chave Pix: <strong className="text-neutral-900 dark:text-white block select-all">{pixKey}</strong>
+                        Chave Pix: <strong className="text-neutral-100 block select-all">{pixKey}</strong>
                       </div>
                     </div>
 
@@ -2342,14 +2342,14 @@ export default function App() {
                           </div>
 
                           <div className="bg-neutral-955 bg-neutral-950 p-4 rounded-xl border border-neutral-900 grid grid-cols-2 sm:grid-cols-3 gap-y-3.5 gap-x-2 text-xs">
-                            <div><span className="text-neutral-500 block text-[10px]">PESCOÇO:</span> <strong className="text-white">{currentSelectedEvaluation.neck} cm</strong></div>
-                            <div><span className="text-neutral-500 block text-[10px]">TÓRAX:</span> <strong className="text-white">{currentSelectedEvaluation.chest} cm</strong></div>
-                            <div><span className="text-neutral-500 block text-[10px]">CINTURA:</span> <strong className="text-white">{currentSelectedEvaluation.waist} cm</strong></div>
-                            <div><span className="text-neutral-500 block text-[10px]">ABDÔMEN:</span> <strong className="text-white">{currentSelectedEvaluation.abdomen} cm</strong></div>
-                            <div><span className="text-neutral-500 block text-[10px]">QUADRIL:</span> <strong className="text-white">{currentSelectedEvaluation.hips} cm</strong></div>
-                            <div><span className="text-neutral-500 block text-[10px]">BRAÇO D / E:</span> <strong className="text-white">{currentSelectedEvaluation.arm_right} / {currentSelectedEvaluation.arm_left}</strong></div>
-                            <div><span className="text-neutral-500 block text-[10px]">COXA D / E:</span> <strong className="text-white">{currentSelectedEvaluation.thigh_right} / {currentSelectedEvaluation.thigh_left}</strong></div>
-                            <div><span className="text-neutral-500 block text-[10px]">PANTURRILHA D / E:</span> <strong className="text-white">{currentSelectedEvaluation.calf_right} / {currentSelectedEvaluation.calf_left}</strong></div>
+                            <div><span className="text-neutral-400 block text-[10px]">PESCOÇO:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.neck} cm</strong></div>
+                            <div><span className="text-neutral-400 block text-[10px]">TÓRAX:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.chest} cm</strong></div>
+                            <div><span className="text-neutral-400 block text-[10px]">CINTURA:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.waist} cm</strong></div>
+                            <div><span className="text-neutral-400 block text-[10px]">ABDÔMEN:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.abdomen} cm</strong></div>
+                            <div><span className="text-neutral-400 block text-[10px]">QUADRIL:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.hips} cm</strong></div>
+                            <div><span className="text-neutral-400 block text-[10px]">BRAÇO D / E:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.arm_right} / {currentSelectedEvaluation.arm_left}</strong></div>
+                            <div><span className="text-neutral-400 block text-[10px]">COXA D / E:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.thigh_right} / {currentSelectedEvaluation.thigh_left}</strong></div>
+                            <div><span className="text-neutral-400 block text-[10px]">PANTURRILHA D / E:</span> <strong className="text-neutral-100">{currentSelectedEvaluation.calf_right} / {currentSelectedEvaluation.calf_left}</strong></div>
                           </div>
 
                           {(currentSelectedEvaluation.photo_front || currentSelectedEvaluation.photo_side) && (
@@ -2410,9 +2410,9 @@ export default function App() {
       {showSwapModal && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center p-4 z-50">
           <div className="bg-neutral-900 border border-neutral-800 rounded-2xl w-full max-w-md p-6 relative text-left">
-            <h3 className="text-lg font-bold text-white mb-2">Solicitar Troca de Exercício</h3>
+            <h3 className="text-lg font-bold text-neutral-100 mb-2">Solicitar Troca de Exercício</h3>
             <p className="text-xs text-neutral-400 mb-4 leading-relaxed">
-              Informe a personal por qual motivo você deseja realizar a alteração do exercício <strong className="text-white">{swapWorkoutName}</strong> (Dificuldade física, dor local, falta de aparelho, etc.).
+              Informe a personal por qual motivo você deseja realizar a alteração do exercício <strong className="text-neutral-100">{swapWorkoutName}</strong> (Dificuldade física, dor local, falta de aparelho, etc.).
             </p>
 
             <form onSubmit={handleSwapRequest} className="space-y-4">
