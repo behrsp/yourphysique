@@ -177,6 +177,27 @@ async function initializeDB() {
       console.log("Admin account seeded successfully (41984842941 / 123456).");
     }
 
+    // Seed Mary Soares admin profile if not exists
+    const maryCheck = await client.query("SELECT * FROM users WHERE phone = $1", ["41991455646"]);
+    if (maryCheck.rows.length === 0) {
+      await client.query(`
+        INSERT INTO users (phone, password, name, age, weight, height, physical_issue, main_goal, role, is_demo)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      `, [
+        "41991455646",
+        "235689",
+        "Mary Soares",
+        30,
+        65,
+        1.68,
+        "Nenhum",
+        "Gestão de Alunos",
+        "admin",
+        false
+      ]);
+      console.log("Mary Soares admin account seeded successfully (41991455646 / 235689).");
+    }
+
     console.log("Database tables initialized successfully!");
   } catch (err) {
     console.error("Error initializing database schema:", err);
@@ -189,7 +210,7 @@ async function initializeDB() {
 
 // Helper to check user freeze and auto-generate current month payment record for completo users
 async function handleUserStatsAndPayments(phone: string, isDemo: boolean, paymentDay: number) {
-  if (isDemo || phone === "41984842941") return false; // Demo or Admin does not pay/gets frozen
+  if (isDemo || phone === "41984842941" || phone === "41991455646") return false; // Demo or Admin does not pay/gets frozen
   
   const currentYearMonth = new Date().toISOString().slice(0, 7); // "YYYY-MM"
   
@@ -285,7 +306,7 @@ app.get("/api/users", async (req, res) => {
     
     // Calculate freezing and online properties on the fly
     const users = await Promise.all(result.rows.map(async (u) => {
-      if (u.phone !== "41984842941" && !u.is_demo) {
+      if (u.role !== "admin" && u.phone !== "41984842941" && u.phone !== "41991455646" && !u.is_demo) {
         u.is_frozen = await handleUserStatsAndPayments(u.phone, u.is_demo, u.payment_day);
       }
       
@@ -376,7 +397,7 @@ app.put("/api/users/:phone", async (req, res) => {
 // Delete user
 app.delete("/api/users/:phone", async (req, res) => {
   const { phone } = req.params;
-  if (phone === "41984842941") {
+  if (phone === "41984842941" || phone === "41991455646") {
     return res.status(400).json({ error: "Não é possível excluir o administrador" });
   }
 

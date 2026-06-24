@@ -1006,7 +1006,7 @@ export default function App() {
                 <div className="flex items-center justify-between">
                   <div className="text-left">
                     <span className="text-xs text-neutral-400 block pb-1">Total de Alunos</span>
-                    <strong className="text-3xl font-black text-white">{clients.filter(c => c.phone !== "41984842941").length}</strong>
+                    <strong className="text-3xl font-black text-white">{clients.filter(c => c.role !== "admin" && c.phone !== "41984842941" && c.phone !== "41991455646").length}</strong>
                   </div>
                   <UserCheck className={`w-8 h-8 ${theme.text}`} />
                 </div>
@@ -1048,7 +1048,7 @@ export default function App() {
               </h3>
               
               <div className="flex flex-wrap items-center gap-6">
-                {clients.filter(c => c.phone !== "41984842941").map((c) => {
+                {clients.filter(c => c.role !== "admin" && c.phone !== "41984842941" && c.phone !== "41991455646").map((c) => {
                   const isActive = activeClientPhone === c.phone;
                   return (
                     <button
@@ -1080,7 +1080,7 @@ export default function App() {
                     </button>
                   );
                 })}
-                {clients.filter(c => c.phone !== "41984842941").length === 0 && (
+                {clients.filter(c => c.role !== "admin" && c.phone !== "41984842941" && c.phone !== "41991455646").length === 0 && (
                   <div className="text-center text-neutral-500 text-xs py-4">Nenhum aluno cadastrado ainda. Use o formulário abaixo para registrar o primeiro!</div>
                 )}
               </div>
